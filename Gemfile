@@ -7,6 +7,7 @@ gem 'net-ssh'
 gem 'thor'
 
 group :development do
+  gem 'coveralls', require: false
   gem 'simplecov', :require => false, :group => :test
   gem 'pry', '~> 0.9.12.2'
   gem 'minitest', '~> 5.0.3'

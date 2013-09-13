@@ -584,10 +584,12 @@ Gem::Specification.new do |s|
     "grinder/GrinderAnalyzer/templates/sorttable.js",
     "grinder/GrinderAnalyzer/templates/wz_tooltip.js",
     "lib/gloader.rb",
-    "lib/gloader/gloader_core.rb",
+    "lib/gloader/cli.rb",
+    "lib/gloader/core.rb",
     "lib/gloader/version.rb",
     "spec/unit/fixtures/.gitignore",
-    "spec/unit/gloader/gloader_core_spec.rb",
+    "spec/unit/gloader/cli_spec.rb",
+    "spec/unit/gloader/core_spec.rb",
     "spec/unit/spec_helper.rb"
   ]
   s.homepage = "http://github.com/bendodd/gloader"
@@ -605,6 +607,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<yajl-ruby>, [">= 0"])
       s.add_runtime_dependency(%q<net-ssh>, [">= 0"])
       s.add_runtime_dependency(%q<thor>, [">= 0"])
+      s.add_development_dependency(%q<coveralls>, [">= 0"])
       s.add_development_dependency(%q<simplecov>, [">= 0"])
       s.add_development_dependency(%q<pry>, ["~> 0.9.12.2"])
       s.add_development_dependency(%q<minitest>, ["~> 5.0.3"])
@@ -623,6 +626,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<yajl-ruby>, [">= 0"])
       s.add_dependency(%q<net-ssh>, [">= 0"])
       s.add_dependency(%q<thor>, [">= 0"])
+      s.add_dependency(%q<coveralls>, [">= 0"])
       s.add_dependency(%q<simplecov>, [">= 0"])
       s.add_dependency(%q<pry>, ["~> 0.9.12.2"])
       s.add_dependency(%q<minitest>, ["~> 5.0.3"])
@@ -642,6 +646,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<yajl-ruby>, [">= 0"])
     s.add_dependency(%q<net-ssh>, [">= 0"])
     s.add_dependency(%q<thor>, [">= 0"])
+    s.add_dependency(%q<coveralls>, [">= 0"])
     s.add_dependency(%q<simplecov>, [">= 0"])
     s.add_dependency(%q<pry>, ["~> 0.9.12.2"])
     s.add_dependency(%q<minitest>, ["~> 5.0.3"])
