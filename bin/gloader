@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+# Exit cleanly from an early interrupt
+Signal.trap("INT") { exit 1 }
+
+require File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib', 'gloader'))
+
+# Force Thor to raise exceptions so we can exit non-zero.
+ENV["THOR_DEBUG"] = "1"
+
+GLoader::CLI.start
