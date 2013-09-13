@@ -1,24 +1,27 @@
 language: ruby
-rvm:
+rvm: 
 - 1.9.2
 - 1.9.3
 - 2.0.0
-deploy:
+deploy: 
   provider: rubygems
-  api_key:
+  api_key: 
     secure: IYAAlcL23reMuVdFE61OmokCP2HtKgwCN14CJ8uMGynpfvjJTZ6R4L4yfFzXbN3Pej4clqM30NK3fbuP8vRh21zEfKgrC1k9UDzHnW8FzEv75+j92LzUDl9OqnHMJsZyrk9W8WtIfFkI10CDhkfSYaQSbpIU822vvxYJQEhO4+o=
   gem: gloader
-  "on":
+  "on": 
     tags: true
     repo: bendodd/gloader
-env:
-  global:
-    secure: H3EiZH1KxkSSoo5hwD6POzBayx9B4SLMfB2K3IpRmrso8/upbHzv4rfa2Ex1O/qwjYruT7GRFrzuk8nU4w6Yk0L66Fz//ScMCICZjQ4DFZrg0T+baax0I67zz//gZmjs1CoL0H9azPY0q518LbKpytk79TwgckJELDYwbjMdF7Q=
-before_script:
-   - "gem install travis-artifacts"
-after_failure: # this will of course run only on failure
-  - "travis-artifacts upload --path debug/debug.log"
-after_success: # and this only on success
-  - "travis-artifacts upload --path build/build.tar.gz"
-after_test:
-  - "travis-artifacts upload --target-path artifacts/$TRAVIS_BUILD_ID/$TRAVIS_JOB_ID"
+env: 
+  global: 
+  - ARTIFACTS_AWS_REGION=eu-west-1
+  - ARTIFACTS_S3_BUCKET=bendodd-travis-ci-artifacts
+  - secure: K8GWi/QV0rGgFUZutXbEhfmHBzAzPEnnfL/2YjAeu/yE7BvJpgfVmMDdlaTYnfQdzWgVrXnqW29AkOkay5/8lHmJaNxAxh+ISqrYYKT8WGLHEwREoni53XwM+J8syJzk2jrkn239x6WoPGthEsd6MMg4A+YjUIUmWzKUg+nPP/g=
+  - secure: gne/XRIBS8WK4d/HlrFC9pvSItxMWs4yp9ZvgE0x/6tUl5gZObrHHIwI5Wq4NaYp1dTikjlT1p/PGb3J4fw6BA1U+++VBqIoBAQLTR+cgVRY+7BhRyyb755hOp84mQ+xq2/ifP4r1BcsCAVn5nHLH9l8xOt4eAsemyTwNmIVJDI=
+before_script: 
+- gem install travis-artifacts
+after_failure: 
+- travis-artifacts upload --path debug/debug.log
+after_success: 
+- travis-artifacts upload --path build/build.tar.gz
+after_test: 
+- travis-artifacts upload --target-path artifacts/$TRAVIS_BUILD_ID/$TRAVIS_JOB_ID
