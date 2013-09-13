@@ -1,0 +1,5 @@
+maintainer       "Armakuni Ltd"
+maintainer_email "all@armakuni.com"
+license          "All rights reserved"
+description      "Installs the zaproxy penetration testing tool."
+version          "0.1.0"

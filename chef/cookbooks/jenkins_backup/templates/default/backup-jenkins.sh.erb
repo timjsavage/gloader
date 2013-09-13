@@ -1,0 +1,6 @@
+#!/bin/bash
+ARCHIVE_FILE=jenkins-$(hostname)-$(date +%Y%m%d).tar.gz
+ARCHIVE_PATH=<%= @archive_dir %>/${ARCHIVE_FILE}
+tar zcvf $ARCHIVE_PATH <%= @jenkins_home %> > /dev/null
+<%= @s3_curl_root %>/s3-curl/s3curl.pl --id backup --put $ARCHIVE_PATH http://s3.amazonaws.com/cr-jenkins-backups/${ARCHIVE_FILE}
+rm $ARCHIVE_PATH

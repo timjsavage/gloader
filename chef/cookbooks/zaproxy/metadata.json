@@ -1,0 +1,29 @@
+{
+  "name": "zaproxy",
+  "description": "Installs the zaproxy penetration testing tool.",
+  "long_description": "",
+  "maintainer": "Armakuni Ltd",
+  "maintainer_email": "all@armakuni.com",
+  "license": "All rights reserved",
+  "platforms": {
+  },
+  "dependencies": {
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+  },
+  "version": "0.1.0"
+}

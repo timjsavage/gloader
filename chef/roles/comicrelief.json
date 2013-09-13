@@ -1,0 +1,35 @@
+{
+    "name": "comicrelief",
+    "chef_type": "role",
+    "json_class": "Chef::Role",
+    "run_list": [],
+    "default_attributes": {
+        "graphite": {
+          "basic_auth_password": "plainTEXTinGIT",
+          "basic_auth_username": "armakuni"
+        },
+        "logstash": {
+          "kibana": {
+            "basic_auth_password": "plainTEXTinGIT",
+            "basic_auth_username": "armakuni"
+            }
+        },
+        "jenkins": {
+            "http_proxy": {
+                "basic_auth_password": "plainTEXTinGIT",
+                "host_aliases": [
+                    "ci-cr.armakuni.com",
+                    "ci-monitoring-cr.armakuni.co.uk"
+                ],
+                "basic_auth_username": "armakuni"
+            },
+            "git": {
+                "user": "cr-jenkins",
+                "email": "cr-jenkins@armakuni.com",
+                "private": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA1kXgz1MpVZciUNeak+48402uOL5osWyyLhq2Jo0VdbPyqFOT\nI07myBVMM7hkJ0cOj541W0bF9vvot09B/R4gEQrEUPc45rK0syrhVXVV5fqy2T6e\nN4mQIVx+On6lkKXmRV6aL333MQg+MGz3wZIfKWZH+UtbIspISYQKNNc3rnu9Sdrf\n+Yo8LJDUY574SQ6raafhEAY0At5QDz4qP/q9/m9PmVl6jahi9GKvqXpZNgKDLGzB\n//et6G4+7qKIwsj/eAOJiGBaJsxKaATWiysKLuXcsJ5uLqLhC3MGEr5wYKsgReZi\nmYaJ0rmK5PJz8X12vu1/WOkFdsYoqyJS9tT5OQIDAQABAoIBAHInikyKDpRlz0do\nhhbXrqKeiPn8H0SfFxJO8sn5EfzCIL4iwFnoODVSe2V2kA0I4y4KaHy3aNJbhLDc\nTdivCwBpTwufmjX18SUe7CueNmQuusfYf2wxIpNTdoBtZoF4kQRWESjKID6EGLWt\n6BS9Z1KkBiY/Sk9vmzFnYhSisCyJEDlcdLP91AkGQXSGlkf2DypfdrPAid7yu5Gg\nlWrK1kNzL2x65IWIkwdyp58oJtWq7bSGAEx1N07RMfrrqOdSU6i+SXTIdc7LbZ6K\nD89JnNfgnuXl1b7XyWZC754ucyvE/tSoPXFifyHhbd7ApRPNuTViR7zSzZ7MLZbC\nYrohGd0CgYEA8NquYuI0HMhht9JhOKLfCuAZUUz3HMl735oGz/5uVrBrASj0wMHK\nsJfPbCQo0lLkruK31CZkTbozomjdmvGHYGhewqKKhCVexQ1L4d971a+06XawNH7e\n/DrNr3PK6W42myHtQIhqmjoTwBkb+jNRi5jdCrtUzIYfY6l26HA89ecCgYEA479J\nXKh05Sz04klBIVDhyebeKICkoapHl7u2kkU98UGG6BQBvDSar0KOVCie2AhjJOTE\nmz5BloLaLmTHCNnZDRnDKOBDdgixM076k04jcnTuImeNhIUw8TaWu9UN5ekmRmFf\nIQsIAOWyS5NmHqzLw/F11AFbg0S1QUOSFIYcc98CgYEA5PkAkEE8CaD2RStcAdvU\n7yHc782bn2JswUZM86+OdhuBnriw9g9GAlxQdR5rMIhdn2UqHiXhdYNvUxcelg7I\nBH80lxSvWrGsRuk9Gp67u4ovE0Qif8Wdd2zv3bzXStPcVd8LDi6iKbzMyfMVBeeD\nvpK0kV9GXqmjbbvNr2wEiEECgYAq8DGgqpH/c05oK2+AHIO1UTWpZTek0znUPava\nP/vBtJz+vGbnWPOg/2deLppkGJC4r/jxW/d5rQn9nTp5TLlDYwwMdNvDMThXeBh+\nFUlRlwIesm9YANSNZcFdgHmyUxbIRittS2si4CuRXCTwu5tfQfL5GZhrU1TpDRhJ\njk9m+QKBgGJLmsDShvgfRrn1ltvTx11lNi+sj9PM2THpcE8bL/hmPHO4vS2o8u2z\nKtooNJS+Po7VGpEJynSYL2uPVsyGrso003mRB51eMzFLkMFsmTugJIn2U99Y5XSi\ncAW3qe+WhS268KSuEdHePX9woEk1luUlImvzAAhZHjaTTTR63+rE\n-----END RSA PRIVATE KEY-----\n",
+                "public": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWReDPUylVlyJQ15qT7jzjTa44vmixbLIuGrYmjRV1s/KoU5MjTubIFUwzuGQnRw6PnjVbRsX2++i3T0H9HiARCsRQ9zjmsrSzKuFVdVXl+rLZPp43iZAhXH46fqWQpeZFXpovffcxCD4wbPfBkh8pZkf5S1siykhJhAo01zeue71J2t/5ijwskNRjnvhJDqtpp+EQBjQC3lAPPio/+r3+b0+ZWXqNqGL0Yq+pelk2AoMsbMH/963obj7uoojCyP94A4mIYFomzEpoBNaLKwou5dywnm4uouELcwYSvnBgqyBF5mKZhonSuYrk8nPxfXa+7X9Y6QV2xiirIlL21Pk5 jenkins@cr"
+            }
+        }      
+    },
+    "override_attributes": {}
+}

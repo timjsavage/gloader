@@ -1,0 +1,36 @@
+ {
+    "name": "load_test_agent",
+    "chef_type": "role",
+    "json_class": "Chef::Role",
+    "run_list": [
+        "recipe[apt]",
+        "recipe[sudo]",
+        "recipe[java]",
+        "recipe[git]",
+        "recipe[python]",
+        "recipe[grinder]"
+    ],
+    "default_attributes": {
+        "authorization": {
+            "sudo": {
+                "passwordless": true,
+                "users": [
+                    "ubuntu",
+                    "grinder",
+                    "vagrant"
+                ],
+                "groups": [
+                    "admin"
+                ]
+            }
+        },
+        "grinder": {
+            "node": {
+              "user": "grinder",
+              "group": "admin"
+            },
+            "role": "agent"
+        }
+    },
+    "override_attributes": {}
+}

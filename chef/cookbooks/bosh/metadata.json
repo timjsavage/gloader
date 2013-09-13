@@ -1,0 +1,29 @@
+{
+  "name": "bosh",
+  "description": "BOSH customisation",
+  "long_description": "BOSH customisation",
+  "maintainer": "Armakuni Ltd",
+  "maintainer_email": "accounts@armakuni.com",
+  "license": "All rights reserved",
+  "platforms": {
+  },
+  "dependencies": {
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+  },
+  "version": "0.1.0"
+}
