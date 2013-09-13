@@ -24,7 +24,7 @@ namespace :gloader do
   end
 end
 
-task :default => ':gloader:core:specs'
+task :default => 'gloader:core:specs'
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
