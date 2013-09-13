@@ -1,12 +1,13 @@
 language: ruby
-rvm: 
+rvm:
 - 1.9.2
 - 1.9.3
-deploy: 
+- 2.0.0
+deploy:
   provider: rubygems
-  api_key: 
+  api_key:
     secure: IYAAlcL23reMuVdFE61OmokCP2HtKgwCN14CJ8uMGynpfvjJTZ6R4L4yfFzXbN3Pej4clqM30NK3fbuP8vRh21zEfKgrC1k9UDzHnW8FzEv75+j92LzUDl9OqnHMJsZyrk9W8WtIfFkI10CDhkfSYaQSbpIU822vvxYJQEhO4+o=
   gem: gloader
-  "on": 
+  "on":
     tags: true
     repo: bendodd/gloader
