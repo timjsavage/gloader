@@ -1,0 +1,5 @@
+#!/bin/bash
+source /etc/profile.d/rbenv.sh
+eval "$(rbenv init -)"
+rbenv shell <%= @ruby_version %>
+DONATIONS_PRESENTATION_APP_HOST=${1} cucumber-nagios <%= @checkout_path %>/features

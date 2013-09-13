@@ -1,0 +1,31 @@
+{
+  "name": "grinder",
+  "description": "Installs/Configures grinder",
+  "long_description": "Install grinder.\n",
+  "maintainer": "Ben Dodd",
+  "maintainer_email": "ben.dodd@armakuni.com",
+  "license": "All rights reserved",
+  "platforms": {
+  },
+  "dependencies": {
+    "python": ">= 0.0.0"
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+    "grinder": "Installs grinder"
+  },
+  "version": "0.1.0"
+}

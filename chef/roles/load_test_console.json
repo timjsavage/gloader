@@ -1,0 +1,35 @@
+ {
+    "name": "load_test_console",
+    "chef_type": "role",
+    "json_class": "Chef::Role",
+    "run_list": [
+        "recipe[apt]",
+        "recipe[sudo]",
+        "recipe[java]",
+        "recipe[grinder]",
+        "recipe[git]"
+    ],
+    "default_attributes": {
+        "authorization": {
+            "sudo": {
+                "passwordless": true,
+                "users": [
+                    "ubuntu",
+                    "grinder",
+                    "vagrant"
+                ],
+                "groups": [
+                    "admin"
+                ]
+            }
+        },
+        "grinder": {
+            "node": {
+              "user": "grinder",
+              "group": "admin"
+            },
+            "role": "console"
+        }
+    },
+    "override_attributes": {}
+}

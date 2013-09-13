@@ -1,0 +1,12 @@
+default['collectd_proxy']['user'] = 'root'
+default['collectd_proxy']['group'] = 'root'
+default['collectd_proxy']['config']['dir'] = '/etc/collectd'
+default['collectd_proxy']['config']['file'] = 'collectd-graphite-bridge.conf'
+default['collectd_proxy']['base_dir'] = '/opt/collectd'
+default['collectd_proxy']['binary'] = 'sbin/collectd'
+default['collectd_proxy']['listen']['port'] = 25826
+default['collectd_proxy']['listen']['ip'] = '0.0.0.0'
+default['collectd_proxy']['graphite']['host'] = 'localhost'
+default['collectd_proxy']['graphite']['port'] = 2003
+default['collectd_proxy']['graphite']['prefix'] = 'machine.'
+default['collectd_proxy']['graphite']['seperate_instances'] = 'true'

@@ -1,0 +1,31 @@
+{
+  "name": "openshift",
+  "description": "OpenShift PAAS",
+  "long_description": "Installs the OpenShift PaaS.\n\n* [https://openshift.redhat.com/community/wiki/build-multi-node-paas-from-scratch](https://openshift.redhat.com/community/wiki/build-multi-node-paas-from-scratch)\n",
+  "maintainer": "Armakuni Ltd",
+  "maintainer_email": "accounts@armakuni.com",
+  "license": "All rights reserved",
+  "platforms": {
+  },
+  "dependencies": {
+    "build-essential": ">= 0.0.0",
+    "rbenv": ">= 0.0.0"
+  },
+  "recommendations": {
+  },
+  "suggestions": {
+  },
+  "conflicting": {
+  },
+  "providing": {
+  },
+  "replacing": {
+  },
+  "attributes": {
+  },
+  "groupings": {
+  },
+  "recipes": {
+  },
+  "version": "0.1.0"
+}

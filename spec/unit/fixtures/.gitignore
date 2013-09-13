@@ -1,0 +1,5 @@
+apps_rendered.json
+nginx_rendered.conf
+routers_to_copy.json.deployed
+routers_failover_to_copy.json.deployed
+apps_to_copy.json.deployed

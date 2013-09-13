@@ -1,0 +1,6 @@
+#
+# Logstash cron tasks
+#
+
+# Run the index optimize script nightly at 4am
+0 4 * * * root <%= node[:logstash][:basedir] %>/server/bin/logstash-index-optimise.sh
