@@ -20,3 +20,5 @@ after_failure: # this will of course run only on failure
   - "travis-artifacts upload --path debug/debug.log"
 after_success: # and this only on success
   - "travis-artifacts upload --path build/build.tar.gz"
+after_test:
+  - "travis-artifacts upload --target-path artifacts/$TRAVIS_BUILD_ID/$TRAVIS_JOB_ID"
