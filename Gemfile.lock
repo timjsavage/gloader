@@ -72,6 +72,7 @@ GEM
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
       rb-kqueue (>= 0.2)
+    log4r (1.1.10)
     lumberjack (1.0.4)
     method_source (0.8.2)
     mime-types (1.25)
@@ -144,6 +145,7 @@ DEPENDENCIES
   guard-rubocop
   httparty
   jeweler (~> 1.8.7)
+  log4r
   minitest (~> 5.0.3)
   net-ssh
   pry (~> 0.9.12.2)

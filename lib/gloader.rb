@@ -1,4 +1,6 @@
 # Encoding: utf-8
 
-require File.join(File.dirname(__FILE__), 'gloader', 'core')
-require File.join(File.dirname(__FILE__), 'gloader', 'cli')
+require_relative 'gloader/core'
+require_relative 'gloader/console'
+require_relative 'gloader/cli'
+require_relative 'gloader/iaas'
