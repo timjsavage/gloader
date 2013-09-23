@@ -1,6 +1,7 @@
 AllCops:
   Includes:
     - Rakefile
+    - Guardfile
     - config.ru
   Excludes:
     - grinder/**

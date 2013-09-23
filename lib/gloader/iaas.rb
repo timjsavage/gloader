@@ -50,7 +50,7 @@ module GLoader
       })
     end
 
-    def find_servers_by_tag(tag, value, platform_id_filter = true)
+    def find_servers_by_tag(tag, value)
       found_servers = false
       aws_regions.each do |region, values|
         servers = connection(region).servers.select do |server|
