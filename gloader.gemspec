@@ -586,11 +586,15 @@ Gem::Specification.new do |s|
     "grinder/GrinderAnalyzer/templates/wz_tooltip.js",
     "lib/gloader.rb",
     "lib/gloader/cli.rb",
+    "lib/gloader/console.rb",
     "lib/gloader/core.rb",
+    "lib/gloader/iaas.rb",
     "lib/gloader/version.rb",
     "spec/unit/fixtures/.gitignore",
     "spec/unit/gloader/cli_spec.rb",
+    "spec/unit/gloader/console_spec.rb",
     "spec/unit/gloader/core_spec.rb",
+    "spec/unit/gloader/iaas_spec.rb",
     "spec/unit/spec_helper.rb"
   ]
   s.homepage = "http://github.com/bendodd/gloader"
@@ -603,75 +607,60 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<fog>, [">= 0"])
-      s.add_runtime_dependency(%q<httparty>, [">= 0"])
-      s.add_runtime_dependency(%q<yajl-ruby>, [">= 0"])
-      s.add_runtime_dependency(%q<net-ssh>, [">= 0"])
-      s.add_runtime_dependency(%q<thor>, [">= 0"])
-      s.add_runtime_dependency(%q<log4r>, [">= 0"])
-      s.add_development_dependency(%q<coveralls>, [">= 0"])
-      s.add_development_dependency(%q<simplecov>, [">= 0"])
-      s.add_development_dependency(%q<pry>, ["~> 0.9.12.2"])
-      s.add_development_dependency(%q<minitest>, ["~> 5.0.3"])
-      s.add_development_dependency(%q<guard>, [">= 0"])
-      s.add_development_dependency(%q<guard-rake>, [">= 0"])
-      s.add_development_dependency(%q<guard-rubocop>, [">= 0"])
+      s.add_runtime_dependency(%q<fog>, ["~> 1.15.0"])
+      s.add_runtime_dependency(%q<httparty>, ["~> 0.11.0"])
+      s.add_runtime_dependency(%q<yajl-ruby>, ["~> 1.1.0"])
+      s.add_runtime_dependency(%q<net-ssh>, ["~> 2.7.0"])
+      s.add_runtime_dependency(%q<thor>, ["~> 0.18.1"])
+      s.add_runtime_dependency(%q<log4r>, ["~> 1.1.10"])
+      s.add_runtime_dependency(%q<bundler>, ["~> 1.3.5"])
+      s.add_runtime_dependency(%q<jeweler>, ["~> 1.8.7"])
+      s.add_development_dependency(%q<pry>, ["~> 0.9.12"])
+      s.add_development_dependency(%q<guard>, ["~> 1.8.2"])
+      s.add_development_dependency(%q<guard-rake>, ["~> 0.0.9"])
+      s.add_development_dependency(%q<guard-rubocop>, ["~> 0.2.2"])
       s.add_development_dependency(%q<growl>, ["~> 1.0.3"])
       s.add_development_dependency(%q<rb-inotify>, ["~> 0.9"])
       s.add_development_dependency(%q<rb-fsevent>, ["~> 0.9"])
-      s.add_development_dependency(%q<webmock>, ["~> 1.13.0"])
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.0"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.8.7"])
-      s.add_development_dependency(%q<rubocop>, [">= 0"])
-      s.add_development_dependency(%q<guard-rubocop>, [">= 0"])
+      s.add_development_dependency(%q<rubocop>, ["~> 0.13.0"])
     else
-      s.add_dependency(%q<fog>, [">= 0"])
-      s.add_dependency(%q<httparty>, [">= 0"])
-      s.add_dependency(%q<yajl-ruby>, [">= 0"])
-      s.add_dependency(%q<net-ssh>, [">= 0"])
-      s.add_dependency(%q<thor>, [">= 0"])
-      s.add_dependency(%q<log4r>, [">= 0"])
-      s.add_dependency(%q<coveralls>, [">= 0"])
-      s.add_dependency(%q<simplecov>, [">= 0"])
-      s.add_dependency(%q<pry>, ["~> 0.9.12.2"])
-      s.add_dependency(%q<minitest>, ["~> 5.0.3"])
-      s.add_dependency(%q<guard>, [">= 0"])
-      s.add_dependency(%q<guard-rake>, [">= 0"])
-      s.add_dependency(%q<guard-rubocop>, [">= 0"])
+      s.add_dependency(%q<fog>, ["~> 1.15.0"])
+      s.add_dependency(%q<httparty>, ["~> 0.11.0"])
+      s.add_dependency(%q<yajl-ruby>, ["~> 1.1.0"])
+      s.add_dependency(%q<net-ssh>, ["~> 2.7.0"])
+      s.add_dependency(%q<thor>, ["~> 0.18.1"])
+      s.add_dependency(%q<log4r>, ["~> 1.1.10"])
+      s.add_dependency(%q<bundler>, ["~> 1.3.5"])
+      s.add_dependency(%q<jeweler>, ["~> 1.8.7"])
+      s.add_dependency(%q<pry>, ["~> 0.9.12"])
+      s.add_dependency(%q<guard>, ["~> 1.8.2"])
+      s.add_dependency(%q<guard-rake>, ["~> 0.0.9"])
+      s.add_dependency(%q<guard-rubocop>, ["~> 0.2.2"])
       s.add_dependency(%q<growl>, ["~> 1.0.3"])
       s.add_dependency(%q<rb-inotify>, ["~> 0.9"])
       s.add_dependency(%q<rb-fsevent>, ["~> 0.9"])
-      s.add_dependency(%q<webmock>, ["~> 1.13.0"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
-      s.add_dependency(%q<bundler>, ["~> 1.0"])
-      s.add_dependency(%q<jeweler>, ["~> 1.8.7"])
-      s.add_dependency(%q<rubocop>, [">= 0"])
-      s.add_dependency(%q<guard-rubocop>, [">= 0"])
+      s.add_dependency(%q<rubocop>, ["~> 0.13.0"])
     end
   else
-    s.add_dependency(%q<fog>, [">= 0"])
-    s.add_dependency(%q<httparty>, [">= 0"])
-    s.add_dependency(%q<yajl-ruby>, [">= 0"])
-    s.add_dependency(%q<net-ssh>, [">= 0"])
-    s.add_dependency(%q<thor>, [">= 0"])
-    s.add_dependency(%q<log4r>, [">= 0"])
-    s.add_dependency(%q<coveralls>, [">= 0"])
-    s.add_dependency(%q<simplecov>, [">= 0"])
-    s.add_dependency(%q<pry>, ["~> 0.9.12.2"])
-    s.add_dependency(%q<minitest>, ["~> 5.0.3"])
-    s.add_dependency(%q<guard>, [">= 0"])
-    s.add_dependency(%q<guard-rake>, [">= 0"])
-    s.add_dependency(%q<guard-rubocop>, [">= 0"])
+    s.add_dependency(%q<fog>, ["~> 1.15.0"])
+    s.add_dependency(%q<httparty>, ["~> 0.11.0"])
+    s.add_dependency(%q<yajl-ruby>, ["~> 1.1.0"])
+    s.add_dependency(%q<net-ssh>, ["~> 2.7.0"])
+    s.add_dependency(%q<thor>, ["~> 0.18.1"])
+    s.add_dependency(%q<log4r>, ["~> 1.1.10"])
+    s.add_dependency(%q<bundler>, ["~> 1.3.5"])
+    s.add_dependency(%q<jeweler>, ["~> 1.8.7"])
+    s.add_dependency(%q<pry>, ["~> 0.9.12"])
+    s.add_dependency(%q<guard>, ["~> 1.8.2"])
+    s.add_dependency(%q<guard-rake>, ["~> 0.0.9"])
+    s.add_dependency(%q<guard-rubocop>, ["~> 0.2.2"])
     s.add_dependency(%q<growl>, ["~> 1.0.3"])
     s.add_dependency(%q<rb-inotify>, ["~> 0.9"])
     s.add_dependency(%q<rb-fsevent>, ["~> 0.9"])
-    s.add_dependency(%q<webmock>, ["~> 1.13.0"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
-    s.add_dependency(%q<bundler>, ["~> 1.0"])
-    s.add_dependency(%q<jeweler>, ["~> 1.8.7"])
-    s.add_dependency(%q<rubocop>, [">= 0"])
-    s.add_dependency(%q<guard-rubocop>, [">= 0"])
+    s.add_dependency(%q<rubocop>, ["~> 0.13.0"])
   end
 end
 
