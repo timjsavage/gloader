@@ -12,10 +12,6 @@ module GLoader
     class_option :very_verbose, type: :boolean, aliases: :V, desc: 'VERY Verbose output'
     class_option :id, type: :string, desc: 'Platform ID to allow multi-tenancy in a single IaaS'
 
-    desc 'status', 'Return the staus of the platform'
-    def failing
-    end
-
     desc 'create', 'Create a load test plaform'
     option :agents, type: :numeric, aliases: :a
     option :eip, type: :string, aliases: :e, desc: 'Elastic IP to use for the console'
