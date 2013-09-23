@@ -5,6 +5,9 @@ require 'thor'
 module GLoader
 
   class Build < Thor
+
+    class_option :aws_id, type: :string, desc: 'AWS ID'
+    class_option :aws_key, type: :string, desc: 'AWS key'
     class_option :verbose, type: :boolean, aliases: :v, desc: 'Verbose output'
     class_option :very_verbose, type: :boolean, aliases: :V, desc: 'VERY Verbose output'
     class_option :id, type: :string, desc: 'Platform ID to allow multi-tenancy in a single IaaS'
@@ -24,17 +27,15 @@ module GLoader
     option :key_pair, type: :string, desc: 'Key Pair to use'
     option :agent_size, type: :string, desc: 'IaaS insance size to use for agents'
     option :console_size, type: :string, desc: 'IaaS insance size to use for the concole'
-    option :script_repo, type: :string, desc: 'Test script GIT repo to use'
-
     def create
       confirmation = yes?('Are you sure?', :green)
-      say('Complete!', :green) if confirmation
+      say('Created!', :green) if confirmation
     end
 
     desc 'destroy', 'Destroy a load test plaform'
     def destroy
       confirmation = yes?('Are you sure?', :green)
-      say('Complete!', :green) if confirmation
+      say('Destroyed!', :green) if confirmation
     end
 
     desc 'failing', 'Report on which agents are failing'
@@ -43,6 +44,13 @@ module GLoader
   end
 
   class Test < Thor
+
+    class_option :aws_id, type: :string, desc: 'AWS ID'
+    class_option :aws_key, type: :string, desc: 'AWS key'
+    class_option :verbose, type: :boolean, aliases: :v, desc: 'Verbose output'
+    class_option :very_verbose, type: :boolean, aliases: :V, desc: 'VERY Verbose output'
+    class_option :id, type: :string, desc: 'Platform ID to allow multi-tenancy in a single IaaS'
+
     desc 'init', 'Initiate load test platform'
     def init
     end
@@ -64,18 +72,32 @@ module GLoader
     end
 
     desc 'test', 'Perform a test run'
+    option :script, type: :string, aliases: :s, desc: 'Test script to use'
+    option :property, type: :string, desc: 'Property to pass to agent'
+    option :timed, type: :numeric, desc: 'Length of test in seconds'
+    option :sleep_factor, type: :numeric, desc: 'Sleep factor'
+    option :sleep_variation, type: :numeric, desc: 'Sleep variation'
+    option :max_duration, type: :numeric, desc: 'Max process duration in milliseconds'
+    option :processes, type: :numeric, aliases: :p, desc: 'Number of processes'
+    option :threads, type: :numeric, aliases: :t, desc: 'Number of threads'
+    option :runs, type: :numeric, aliases: :r, desc: 'Number of runs per thread'
     def test
     end
 
     desc 'get_logs', 'Get logs from the agents'
+    option :log_sample, type: :numeric, desc: 'Number of servers to get logs from'
     def get_logs
     end
 
     desc 'report_ga', 'Generate a GrinderAnalyser report'
+    option :save_report_to_s3, type: :boolean, desc: 'Save the report to S3'
+    option :s3_bucket, type: :string, desc: 'S3 bucket to save to'
+    option :report_tag, type: :string, desc: 'Tag to use in the report name'
     def report_ga
     end
 
     desc 'report_g2g', 'Send agent data to Graphite'
+    option :report_tag, type: :string, desc: 'Tag to use in the report name'
     def report_g2g
     end
   end

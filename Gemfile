@@ -5,6 +5,7 @@ gem 'httparty'
 gem 'yajl-ruby'
 gem 'net-ssh'
 gem 'thor'
+gem 'log4r'
 
 group :development do
   gem 'coveralls', require: false
