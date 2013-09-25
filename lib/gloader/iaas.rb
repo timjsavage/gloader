@@ -53,18 +53,15 @@ module GLoader
       })
     end
 
-    def find_servers_by_tag(tag, value)
+    def find_instances_by_tag(tag, value)
       found_servers = false
       aws_regions.each do |region, values|
         servers = connection(region).servers.select do |server|
           server.tags.any? do |server_tag, server_value|
-            server_tag == tag &&
-            server_value == value &&
-            server.state != 'terminated' &&
-            server.state != 'shutting-down'
+            instance_matches_tag?(server, tag, value, server_tag, server_value)
           end &&
           server.tags.any? do |server_tag, server_value|
-            server_tag == LOAD_TEST_PLATFORM_TAG_NAME_ID && server_value == config[:platform_id]
+            instance_matches_platform?(server_tag, server_value)
           end
         end
         found_servers ? found_servers.concat(servers) : found_servers = servers
@@ -72,5 +69,110 @@ module GLoader
       found_servers
     end
 
+    def instance_matches_tag?(server, tag, value, server_tag, server_value)
+      server_tag == tag &&
+      server_value == value &&
+      server.state != 'terminated' &&
+      server.state != 'shutting-down'
+    end
+
+    def instance_matches_platform?(server_tag, server_value)
+      server_tag == LOAD_TEST_PLATFORM_TAG_NAME_ID &&
+      server_value == config[:platform_id]
+    end
+
+    def instance_image(region)
+      raise ArgumentError unless aws_regions[region]
+      aws_regions[region][:ami]
+    end
+
+    def instance_size(type)
+      raise ArgumentError unless type == :agent || type == :console
+      if type == :agent
+        'm1.medium'
+      else
+        'm1.medium'
+      end
+    end
+
+    def key_pair_name
+      LOAD_TEST_PLATFORM_GROUP_TAG
+    end
+
+    def private_key_path(region)
+      File.expand_path "~/.ssh/#{LOAD_TEST_PLATFORM_GROUP_TAG}-#{region}.key".gsub('_', '-')
+    end
+
+    def key_pair(region)
+      create_key_pair(region)
+      key_pair_name
+    end
+
+    def key_pair_exists?(region)
+      connection(region).key_pairs.get(key_pair_name).nil? ? false : true
+    end
+
+    def private_key_exists?(region)
+      File.readable?(private_key_path(region))
+    end
+
+    def create_key_pair(region)
+      if key_pair_exists?(region) && private_key_exists?(region)
+        connection(region).key_pairs.get(key_pair_name)
+      else
+        delete_key_pair(region)
+        delete_private_key(region)
+        key = connection(region).key_pairs.create({ name: key_pair_name })
+        File.open(private_key_path(region), 'w', 0600) { |f| f.write(key.private_key) }
+        key
+      end
+    end
+
+    def delete_key_pair(region)
+      connection(region).delete_key_pair(key_pair_name) if key_pair_exists?(region)
+    end
+
+    def delete_private_key(region)
+      File.delete private_key_path(region) if File.exist? private_key_path(region)
+    end
+
+    def platform_id
+      config[:platform_id]
+    end
+
+    def instance_tags(type)
+      if type == :agent
+        {
+          LOAD_TEST_PLATFORM_TAG_NAME     => LOAD_TEST_PLATFORM_AGENT_TAG,
+          LOAD_TEST_PLATFORM_TAG_NAME_ID  => platform_id,
+          LOAD_TEST_PLATFORM_GROUP_TAG    => 'true',
+          'Name'                          => "#{LOAD_TEST_PLATFORM_AGENT_TAG} (#{platform_id})",
+        }
+      else
+        {
+          LOAD_TEST_PLATFORM_TAG_NAME     => LOAD_TEST_PLATFORM_CONSOLE_TAG,
+          LOAD_TEST_PLATFORM_TAG_NAME_ID  => platform_id,
+          LOAD_TEST_PLATFORM_GROUP_TAG    => 'true',
+          'Name'                          => "#{LOAD_TEST_PLATFORM_CONSOLE_TAG} (#{platform_id})",
+        }
+      end
+    end
+
+    def create_instance(type, region)
+      raise ArgumentError unless type == :agent || type == :console
+      raise ArgumentError unless aws_regions[region]
+
+      Fog.credentials = Fog.credentials.merge({ private_key_path: private_key_path(region) })
+      console_attributes = {
+        availability_zone:  '',
+        image_id:           instance_image(region),
+        flavor_id:          instance_size(type),
+        key_name:           key_pair(region),
+        tags:               instance_tags(region)
+      }
+      server = connection(region).servers.bootstrap(console_attributes)
+      server.wait_for(Fog.timeout, 5) { ready? && sshable? }
+      server
+    end
   end
 end
