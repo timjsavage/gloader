@@ -198,17 +198,18 @@ describe GLoader do
     describe '#create_key_pair' do
 
       it 'will create a key and key file' do
-        Fog::Mock.reset
         region = 'eu-west-1'
         key = gloader.create_key_pair(region)
         key.must_be_instance_of Fog::Compute::AWS::KeyPair
-
-        private_key_path = gloader.private_key_path(region)
         IO.read(gloader.private_key_path(region)).must_equal key.private_key
-        File.delete(private_key_path)
+      end
+      it 'will not create a key and key file if they already exist' do
+        region = 'eu-west-1'
+        gloader.create_key_pair(region)
+        key = gloader.create_key_pair(region)
+        key.must_be_instance_of Fog::Compute::AWS::KeyPair
       end
       it 'will create a key and key file if a key pair but no private key file exists' do
-        Fog::Mock.reset
         region = 'eu-west-1'
         gloader.create_key_pair(region)
         private_key_path = gloader.private_key_path(region)
@@ -216,18 +217,14 @@ describe GLoader do
 
         key = gloader.create_key_pair(region)
         IO.read(gloader.private_key_path(region)).must_equal key.private_key
-        File.delete(private_key_path)
       end
       it 'will create a key and key file if a private key file but no key pair exists' do
-        Fog::Mock.reset
         region = 'eu-west-1'
         gloader.create_key_pair(region)
-        private_key_path = gloader.private_key_path(region)
         gloader.connection(region).delete_key_pair(gloader.key_pair_name)
 
         key = gloader.create_key_pair(region)
         IO.read(gloader.private_key_path(region)).must_equal key.private_key
-        File.delete(private_key_path)
       end
     end
 
