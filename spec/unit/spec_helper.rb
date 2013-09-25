@@ -3,6 +3,8 @@
 require 'simplecov'
 require 'coveralls'
 
+SimpleCov.minimum_coverage 90
+SimpleCov.refuse_coverage_drop
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   SimpleCov::Formatter::HTMLFormatter,
   Coveralls::SimpleCov::Formatter
