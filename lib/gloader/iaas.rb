@@ -1,5 +1,7 @@
 # Encoding: utf-8
 
+require 'fog'
+
 require 'slowweb'
 SlowWeb.limit('amazonaws.com', 60, 60)  # 60 requests per minute
 
