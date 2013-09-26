@@ -24,6 +24,7 @@ end
 
 group :test do
   gem 'minitest', '~> 5.0.3'
+  gem 'webmock', '~> 1.13.0'
   gem 'simplecov', require: false
   gem 'coveralls', require: false
   gem 'rubocop', '~> 0.13.0'
