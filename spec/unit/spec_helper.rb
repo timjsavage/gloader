@@ -20,6 +20,7 @@ require 'minitest/spec'
 require 'webmock/minitest'
 
 require_relative '../../lib/gloader/core'
+require_relative '../../lib/gloader/config'
 require_relative '../../lib/gloader/console'
 require_relative '../../lib/gloader/cli'
 require_relative '../../lib/gloader/iaas'

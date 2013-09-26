@@ -64,28 +64,23 @@ describe GLoader do
     end
 
     describe '#connection' do
-
       it 'should return a connection for a region' do
         gloader.connection('eu-west-1').must_be_instance_of Fog::Compute::AWS::Mock
         gloader.connection('eu-west-1').region.must_equal 'eu-west-1'
         gloader.connection('us-east-1').region.must_equal 'us-east-1'
       end
-
       it 'will raise if region is empty' do
         assert_raises(ArgumentError) { gloader.connection }
       end
     end
 
     describe '#connection_s3' do
-
       before(:each) do
         Fog.mock!
       end
-
       after(:each) do
         Fog::Mock.reset
       end
-
       it 'should return a S3 connection for a region' do
         gloader.connection_s3.must_be_instance_of Fog::Storage::AWS::Mock
         gloader.connection_s3.directories.must_be_instance_of Fog::Storage::AWS::Directories
@@ -94,16 +89,13 @@ describe GLoader do
     end
 
     describe '#find_instances_by_tag' do
-
       it 'will raise if app name is empty' do
         assert_raises(ArgumentError) { gloader.find_instances_by_tag }
       end
-
       it 'will return no instances if there aren\'t any' do
         gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
                                       LOAD_TEST_PLATFORM_AGENT_TAG).must_equal []
       end
-
       it 'will return agent instances based on tags' do
         create_console
         create_agent('eu-west-1')
@@ -113,7 +105,6 @@ describe GLoader do
         servers.size.must_equal 2
         servers.first.must_be_instance_of Fog::Compute::AWS::Server
       end
-
       it 'will return console instances based on tags' do
         create_console
         create_agent('eu-west-1')
@@ -194,7 +185,6 @@ describe GLoader do
     end
 
     describe '#create_key_pair' do
-
       it 'will create a key and key file' do
         region = 'eu-west-1'
         key = gloader.create_key_pair(region)
@@ -232,23 +222,29 @@ describe GLoader do
       end
     end
 
-    describe '#create_instance' do
+    describe '#instance_attributes' do
+      it 'will return attributes for a console instance' do
+        region = 'eu-west-1'
+        type = :console
+        attr = gloader.instance_attributes(type, region)
+        attr[:tags][LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
+        attr[:image_id].must_equal gloader.aws_regions[region][:ami]
+      end
+    end
 
+    describe '#create_instance' do
       it 'will create an agent instance' do
         gloader.create_instance(:agent, 'eu-west-1').must_be_instance_of Fog::Compute::AWS::Server
       end
-
       it 'will create a console instance' do
         gloader.create_instance(:console, 'eu-west-1').must_be_instance_of Fog::Compute::AWS::Server
         servers = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
                                                 LOAD_TEST_PLATFORM_CONSOLE_TAG)
         servers.size.must_equal 1
       end
-
       it 'will raise for an invalid instance type' do
         assert_raises(ArgumentError) { gloader.create_instance('foo', 'eu-west-1') }
       end
-
       it 'will raise for an invalid region' do
         assert_raises(ArgumentError) { gloader.create_instance(:agent, 'foo') }
       end

@@ -160,19 +160,21 @@ module GLoader
       end
     end
 
-    def create_instance(type, region)
-      raise ArgumentError unless type == :agent || type == :console
-      raise ArgumentError unless aws_regions[region]
-
-      Fog.credentials = Fog.credentials.merge({ private_key_path: private_key_path(region) })
-      console_attributes = {
+    def instance_attributes(type, region)
+      {
         availability_zone:  '',
         image_id:           instance_image(region),
         flavor_id:          instance_size(type),
         key_name:           key_pair(region),
         tags:               instance_tags(region)
       }
-      server = connection(region).servers.bootstrap(console_attributes)
+    end
+
+    def create_instance(type, region)
+      raise ArgumentError unless type == :agent || type == :console
+      raise ArgumentError unless aws_regions[region]
+      Fog.credentials = Fog.credentials.merge({ private_key_path: private_key_path(region) })
+      server = connection(region).servers.bootstrap(instance_attributes(type, region))
       server.wait_for(Fog.timeout, 5) { ready? && sshable? }
       server
     end
