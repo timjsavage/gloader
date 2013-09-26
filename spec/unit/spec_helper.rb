@@ -9,6 +9,9 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 ]
 SimpleCov.start do
   add_filter '/spec/'
+  add_filter '/pkg/'
+  add_filter '/chef/'
+  add_filter '/grinder/'
 end
 
 require 'minitest/autorun'

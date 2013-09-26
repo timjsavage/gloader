@@ -8,6 +8,7 @@ group 'specs' do
   guard 'rake', task: 'gloader:core:specs' do
     watch(%r{^lib/gloader/(.+)\.rb$})
     watch(%r{^spec/unit/gloader/(.+)\.rb$})
+    watch(%r{^spec/unit/(.+)\.rb$})
   end
 end
 
