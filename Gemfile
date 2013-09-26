@@ -20,12 +20,11 @@ group :development do
   gem 'rb-inotify', '~> 0.9'
   gem 'rb-fsevent', '~> 0.9'
   gem 'rdoc', '~> 3.12'
-  gem 'rubocop', '~> 0.13.0'
 end
 
 group :test do
   gem 'minitest', '~> 5.0.3'
-  gem 'webmock', '~> 1.13.0'
   gem 'simplecov', require: false
   gem 'coveralls', require: false
+  gem 'rubocop', '~> 0.13.0'
 end
