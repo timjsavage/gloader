@@ -2,8 +2,6 @@
 
 require_relative '../spec_helper'
 
-require 'fog'
-
 describe GLoader do
   describe GLoader::Iaas do
 
