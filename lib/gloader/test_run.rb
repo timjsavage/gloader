@@ -1,9 +1,7 @@
 # Encoding: utf-8
 
 module GLoader
-  module Core
-
-    include GLoader::Logger
+  class TestRun
 
   end
 end

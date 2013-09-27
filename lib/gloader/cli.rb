@@ -6,6 +6,11 @@ module GLoader
 
   class Build < Thor
 
+    no_commands do
+      include GLoader::Logger
+      include GLoader::Core
+    end
+
     class_option :aws_id, type: :string, desc: 'AWS ID'
     class_option :aws_key, type: :string, desc: 'AWS key'
     class_option :verbose, type: :boolean, aliases: :v, desc: 'Verbose output'
