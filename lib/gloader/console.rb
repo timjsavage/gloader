@@ -1,8 +1,10 @@
 # Encoding: utf-8
 
-module GLoader
+require 'httparty'
+require 'yajl'
 
-  class Console
+module GLoader
+  module Console
 
     include GLoader::Logger
 
@@ -16,6 +18,12 @@ module GLoader
 
     def console_port
       6373
+    end
+
+    def make_console_api_request(method, resource, options = {})
+      logger.info "Request: #{method} #{console_url}#{resource}"
+      response = HTTParty.send(method.to_sym, console_url + '/' + resource, options)
+      Yajl::Parser.parse(response.body, symbolize_keys: true)
     end
   end
 end

@@ -72,6 +72,18 @@ describe GLoader do
         end
       end
 
+      describe '#rate_limit' do
+        it 'should add a rate limiter for the iaas api' do
+          gloader.rate_limit
+          SlowWeb.get_limit('amazonaws.com').host.must_equal 'amazonaws.com'
+        end
+        it 'should not add another rate limiter if one has already been set' do
+          gloader.rate_limit
+          gloader.rate_limit
+          SlowWeb.get_limit('amazonaws.com').host.must_equal 'amazonaws.com'
+        end
+      end
+
       describe '#aws_regions' do
         it 'should return a hash of Iaas regions' do
           gloader.aws_regions.length.must_equal 8
@@ -109,7 +121,7 @@ describe GLoader do
       end
 
       describe '#find_instances_by_tag' do
-        it 'will raise if app name is empty' do
+        it 'will raise if region is not passed' do
           assert_raises(ArgumentError) { gloader.find_instances_by_tag }
         end
         it 'will return no instances if there aren\'t any' do

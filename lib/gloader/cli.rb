@@ -6,16 +6,15 @@ module GLoader
 
   class Build < Thor
 
-    no_commands do
-      include GLoader::Logger
-      include GLoader::Core
-    end
-
     class_option :aws_id, type: :string, desc: 'AWS ID'
     class_option :aws_key, type: :string, desc: 'AWS key'
     class_option :verbose, type: :boolean, aliases: :v, desc: 'Verbose output'
     class_option :very_verbose, type: :boolean, aliases: :V, desc: 'VERY Verbose output'
     class_option :id, type: :string, desc: 'Platform ID to allow multi-tenancy in a single IaaS'
+
+    desc 'status', 'Get the status of the platform'
+    def status
+    end
 
     desc 'create', 'Create a load test plaform'
     option :agents, type: :numeric, aliases: :a

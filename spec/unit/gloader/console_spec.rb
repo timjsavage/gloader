@@ -3,10 +3,13 @@
 require_relative '../spec_helper'
 
 describe GLoader do
-
   describe GLoader::Console do
 
-    let(:gloader) { GLoader::Console.new }
+    let(:gloader) do
+      class Test
+        include GLoader::Console
+      end.new
+    end
 
     describe '#console_url' do
       it 'should return a console url' do
@@ -23,6 +26,15 @@ describe GLoader do
     describe '#console_port' do
       it 'should return a console port' do
         gloader.console_port.must_equal 6373
+      end
+    end
+
+    describe '#make_console_api_request' do
+      it 'should make a request to the console api' do
+        stub_request(:get, gloader.console_url + '/recording/data') \
+          .to_return(status: 200, body: '{"result":"foo"}')
+        result = { result: 'foo' }
+        gloader.make_console_api_request('get', 'recording/data').must_equal result
       end
     end
 
