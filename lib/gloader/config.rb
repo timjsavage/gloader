@@ -6,6 +6,7 @@ module GLoader
   class Config
 
     include GLoader::Core
+    include GLoader::Logger
 
     def initialize
       parse_config

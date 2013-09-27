@@ -4,6 +4,8 @@ module GLoader
 
   class Console
 
+    include GLoader::Logger
+
     def console_url
       sprintf 'http://%s:%d', console_host, console_port
     end

@@ -20,7 +20,7 @@ require 'rake/testtask'
 namespace :gloader do
   namespace :core do
     Rake::TestTask.new('specs') do |t|
-      t.pattern = 'spec/unit/gloader/*_spec.rb'
+      t.pattern = 'spec/unit/gloader/**/*_spec.rb'
     end
   end
 end
