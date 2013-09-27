@@ -21,6 +21,10 @@ module GLoader
 
       def initialize(config = {})
         config(config)
+        rate_limit
+      end
+
+      def rate_limit
         SlowWeb.limit('amazonaws.com', 60, 60) if SlowWeb.get_limit('amazonaws.com').nil?
       end
 
@@ -66,7 +70,7 @@ module GLoader
       end
 
       def find_instances_by_tag(tag, value)
-        found_servers = false
+        found_servers = []
         aws_regions.each do |region, values|
           servers = connection(region).servers.select do |server|
             server.tags.any? do |server_tag, server_value|

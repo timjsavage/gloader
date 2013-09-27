@@ -5,11 +5,13 @@ require 'psych'
 module GLoader
   class Config
 
-    include GLoader::Core
-    include GLoader::Logger
-
     def initialize
       parse_config
+    end
+
+    def config(config = {})
+      @config ||= {}
+      @config.merge!(config)
     end
 
     def parse_config
@@ -22,19 +24,11 @@ module GLoader
     end
 
     def default_config
-      {
-        'platform_id' => 'default'
-      }
+      { 'platform_id' => 'default' }
     end
 
     def config_path
       File.expand_path '.gloader.yml'
     end
-
-    def config(config = {})
-      @config ||= {}
-      @config.merge!(config)
-    end
-
   end
 end
