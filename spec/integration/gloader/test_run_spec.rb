@@ -2,6 +2,6 @@
 
 require_relative '../spec_helper'
 
-describe 'GLoader Test Run' do
+describe 'GLoader Test' do
 
 end
