@@ -22,7 +22,7 @@ describe GLoader do
         GLoader::Iaas::Aws.new({ aws_access_key_id:      'foo',
                                  aws_secret_access_key:  'bar',
                                  platform_id:            'default',
-                                 init:                   false})
+                                 init:                   false })
       end
 
       def create_console
