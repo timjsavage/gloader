@@ -12,15 +12,18 @@ rescue Bundler::BundlerError => e
 end
 require 'rake'
 
-task default: [:rubocop, 'gemspec:validate', 'gloader:core:specs']
+task default: [:rubocop, 'gemspec:validate', 'gloader:specs:unit', 'gloader:specs:integration']
 
 require File.expand_path(File.join(File.dirname(__FILE__), 'lib', 'gloader'))
 require File.expand_path(File.join(File.dirname(__FILE__), 'lib', 'gloader', 'version'))
 require 'rake/testtask'
 namespace :gloader do
-  namespace :core do
-    Rake::TestTask.new('specs') do |t|
+  namespace :specs do
+    Rake::TestTask.new('unit') do |t|
       t.pattern = 'spec/unit/gloader/**/*_spec.rb'
+    end
+    Rake::TestTask.new('integration') do |t|
+      t.pattern = 'spec/integration/gloader/**/*_spec.rb'
     end
   end
 end
