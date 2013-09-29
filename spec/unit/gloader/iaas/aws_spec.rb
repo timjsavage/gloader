@@ -13,7 +13,7 @@ describe GLoader do
 
       after(:each) do
         Fog::Mock.reset
-        gloader.aws_regions.each do |region, values|
+        gloader.regions.each do |region, values|
           gloader.delete_private_key(region)
         end
       end
@@ -21,7 +21,8 @@ describe GLoader do
       let(:gloader) do
         GLoader::Iaas::Aws.new({ aws_access_key_id:      'foo',
                                  aws_secret_access_key:  'bar',
-                                 platform_id:            'default' })
+                                 platform_id:            'default',
+                                 init:                   false})
       end
 
       def create_console
@@ -84,11 +85,11 @@ describe GLoader do
         end
       end
 
-      describe '#aws_regions' do
+      describe '#regions' do
         it 'should return a hash of Iaas regions' do
-          gloader.aws_regions.length.must_equal 8
-          gloader.aws_regions['eu-west-1'][:ami].must_equal 'ami-ca1a14be'
-          gloader.aws_regions.each_pair do |region, config|
+          gloader.regions.length.must_equal 8
+          gloader.regions['eu-west-1'][:ami].must_equal 'ami-ca1a14be'
+          gloader.regions.each_pair do |region, config|
             config[:ami].must_match /^ami-[a-z0-9]+$/
             config[:weight].must_be_instance_of Fixnum
           end
@@ -172,6 +173,30 @@ describe GLoader do
         end
         it 'will raise for an invalid instance type' do
           assert_raises(ArgumentError) { gloader.instance_size('foo') }
+        end
+      end
+
+      describe '#create_security_group' do
+        it 'should create a security group' do
+          gloader.create_security_group('eu-west-1')
+          group = gloader.connection('eu-west-1').security_groups.select do |g|
+            g.name == 'gloader'
+          end.first
+          group.must_be_instance_of Fog::Compute::AWS::SecurityGroup
+          perms = group.ip_permissions
+          perms.select { |p| p['ipProtocol'] == 'tcp' && p['toPort'] == 22 }.wont_be_empty
+          perms.select { |p| p['ipProtocol'] == 'tcp' && p['toPort'] == 6372 }.wont_be_empty
+          perms.select { |p| p['ipProtocol'] == 'tcp' && p['toPort'] == 6373 }.wont_be_empty
+        end
+      end
+
+      describe '#delete_security_group' do
+        it 'should delete a security group even if it doesn\'t exist' do
+          gloader.delete_security_group('eu-west-1').must_equal nil
+        end
+        it 'should delete a existing security group' do
+          gloader.create_security_group('eu-west-1')
+          gloader.delete_security_group('eu-west-1').status.must_equal 200
         end
       end
 
@@ -268,7 +293,7 @@ describe GLoader do
           type = :console
           attr = gloader.instance_attributes(type, region)
           attr[:tags][LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
-          attr[:image_id].must_equal gloader.aws_regions[region][:ami]
+          attr[:image_id].must_equal gloader.regions[region][:ami]
         end
       end
 

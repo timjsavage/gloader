@@ -16,12 +16,17 @@ module GLoader
         instance_size_console:  'm1.medium',
         region:                 'eu-west-1',
         availability_zone:      '',
-        distribution:           'single'
+        distribution:           'single',
+        security_group:         'gloader'
       }
 
       def initialize(config = {})
         config(config)
         rate_limit
+        unless config[:init] == false
+          create_security_groups
+          create_key_pairs
+        end
       end
 
       def rate_limit
@@ -33,7 +38,7 @@ module GLoader
         @config.merge!(config)
       end
 
-      def aws_regions
+      def regions
         {
           'eu-west-1'       => { ami: 'ami-ca1a14be', weight: 1 },
           'ap-northeast-1'  => { ami: 'ami-0366e302', weight: 1 },
@@ -71,7 +76,7 @@ module GLoader
 
       def find_instances_by_tag(tag, value)
         found_servers = []
-        aws_regions.each do |region, values|
+        regions.each do |region, values|
           servers = connection(region).servers.select do |server|
             server.tags.any? do |server_tag, server_value|
               instance_matches_tag?(server, tag, value, server_tag, server_value)
@@ -98,8 +103,8 @@ module GLoader
       end
 
       def instance_image(region)
-        raise ArgumentError unless aws_regions[region]
-        aws_regions[region][:ami]
+        raise ArgumentError unless regions[region]
+        regions[region][:ami]
       end
 
       def instance_size(type)
@@ -111,12 +116,49 @@ module GLoader
         end
       end
 
+      def create_security_groups
+        regions.each { |region, config| create_security_group(region) }
+      end
+
+      def create_security_group(region)
+        security_group = config[:security_group]
+        unless connection(region).security_groups.map { |s|s.name }.include?(security_group)
+          connection(region).create_security_group(security_group, security_group)
+          [22, 6372, 6373].each do |port|
+            open_port(region, security_group, port)
+          end
+        end
+      end
+
+      def open_port(region, security_group, port)
+        connection(region).authorize_security_group_ingress(
+          security_group,
+          { 'CidrIp'      => '0.0.0.0/0',
+            'IpProtocol'  => 'tcp',
+            'FromPort'    => port,
+            'ToPort'      => port }
+        )
+      end
+
+      def delete_security_group(region)
+        security_group = config[:security_group]
+        if connection(region).security_groups.map { |s|s.name }.include?(security_group)
+          connection(region).delete_security_group(security_group)
+        end
+      end
+
       def key_pair_name
         LOAD_TEST_PLATFORM_GROUP_TAG
       end
 
       def private_key_path(region)
-        File.expand_path "~/.ssh/#{LOAD_TEST_PLATFORM_GROUP_TAG}-#{region}.key".gsub('_', '-')
+        path = File.expand_path "~/.ssh/#{LOAD_TEST_PLATFORM_GROUP_TAG}-#{region}.key"
+        path.sub!('.key', '-test.key') if ENV['GEM_ENV']
+        path.sub('_', '-')
+      end
+
+      def create_key_pairs
+        regions.each { |region, config| key_pair(region) }
       end
 
       def key_pair(region)
@@ -189,7 +231,7 @@ module GLoader
       def create_instance(type, region)
         logger.info "Creating instance: #{type.to_s} in #{region}"
         raise ArgumentError unless type == :agent || type == :console
-        raise ArgumentError unless aws_regions[region]
+        raise ArgumentError unless regions[region]
         Fog.credentials = Fog.credentials.merge({ private_key_path: private_key_path(region) })
         server = connection(region).servers.bootstrap(instance_attributes(type, region))
         server.wait_for(Fog.timeout, 5) { ready? && sshable? }
