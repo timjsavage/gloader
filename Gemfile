@@ -28,4 +28,7 @@ group :test do
   gem 'simplecov', require: false
   gem 'coveralls', require: false
   gem 'rubocop', '~> 0.13.0'
+  gem 'flog',  '~> 4.1.2'
+  gem 'roodi', '~> 3.1.1'
+  gem 'reek', '~> 1.3.3'
 end
