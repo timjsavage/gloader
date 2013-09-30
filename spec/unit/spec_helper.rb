@@ -3,10 +3,12 @@
 ENV['GEM_ENV'] = 'test'
 
 require 'simplecov'
+require 'simplecov-rcov'
 require 'coveralls'
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::RcovFormatter,
   Coveralls::SimpleCov::Formatter
 ]
 SimpleCov.start do
