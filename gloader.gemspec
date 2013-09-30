@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Benedict Dodd"]
-  s.date = "2013-09-23"
+  s.date = "2013-09-30"
   s.description = "Buids Grinder load test platform and controls test runs"
   s.email = "mail@bendodd.com"
   s.executables = ["gloader"]
@@ -586,15 +586,30 @@ Gem::Specification.new do |s|
     "grinder/GrinderAnalyzer/templates/wz_tooltip.js",
     "lib/gloader.rb",
     "lib/gloader/cli.rb",
+    "lib/gloader/config.rb",
     "lib/gloader/console.rb",
     "lib/gloader/core.rb",
     "lib/gloader/iaas.rb",
+    "lib/gloader/iaas/aws.rb",
+    "lib/gloader/logger.rb",
+    "lib/gloader/platform.rb",
+    "lib/gloader/test_run.rb",
     "lib/gloader/version.rb",
+    "spec/integration/gloader/cli_spec.rb",
+    "spec/integration/gloader/platform_spec.rb",
+    "spec/integration/gloader/test_run_spec.rb",
+    "spec/integration/spec_helper.rb",
     "spec/unit/fixtures/.gitignore",
+    "spec/unit/fixtures/config_gloader.yml",
     "spec/unit/gloader/cli_spec.rb",
+    "spec/unit/gloader/config_spec.rb",
     "spec/unit/gloader/console_spec.rb",
     "spec/unit/gloader/core_spec.rb",
+    "spec/unit/gloader/iaas/aws_spec.rb",
     "spec/unit/gloader/iaas_spec.rb",
+    "spec/unit/gloader/logger_spec.rb",
+    "spec/unit/gloader/platform_spec.rb",
+    "spec/unit/gloader/test_run_spec.rb",
     "spec/unit/spec_helper.rb"
   ]
   s.homepage = "http://github.com/bendodd/gloader"
@@ -615,6 +630,8 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<log4r>, ["~> 1.1.10"])
       s.add_runtime_dependency(%q<bundler>, ["~> 1.3.5"])
       s.add_runtime_dependency(%q<jeweler>, ["~> 1.8.7"])
+      s.add_runtime_dependency(%q<slowweb>, ["~> 0.1.1"])
+      s.add_runtime_dependency(%q<formatador>, ["~> 0.2.4"])
       s.add_development_dependency(%q<pry>, ["~> 0.9.12"])
       s.add_development_dependency(%q<guard>, ["~> 1.8.2"])
       s.add_development_dependency(%q<guard-rake>, ["~> 0.0.9"])
@@ -623,7 +640,6 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rb-inotify>, ["~> 0.9"])
       s.add_development_dependency(%q<rb-fsevent>, ["~> 0.9"])
       s.add_development_dependency(%q<rdoc>, ["~> 3.12"])
-      s.add_development_dependency(%q<rubocop>, ["~> 0.13.0"])
     else
       s.add_dependency(%q<fog>, ["~> 1.15.0"])
       s.add_dependency(%q<httparty>, ["~> 0.11.0"])
@@ -633,6 +649,8 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<log4r>, ["~> 1.1.10"])
       s.add_dependency(%q<bundler>, ["~> 1.3.5"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.7"])
+      s.add_dependency(%q<slowweb>, ["~> 0.1.1"])
+      s.add_dependency(%q<formatador>, ["~> 0.2.4"])
       s.add_dependency(%q<pry>, ["~> 0.9.12"])
       s.add_dependency(%q<guard>, ["~> 1.8.2"])
       s.add_dependency(%q<guard-rake>, ["~> 0.0.9"])
@@ -641,7 +659,6 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rb-inotify>, ["~> 0.9"])
       s.add_dependency(%q<rb-fsevent>, ["~> 0.9"])
       s.add_dependency(%q<rdoc>, ["~> 3.12"])
-      s.add_dependency(%q<rubocop>, ["~> 0.13.0"])
     end
   else
     s.add_dependency(%q<fog>, ["~> 1.15.0"])
@@ -652,6 +669,8 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<log4r>, ["~> 1.1.10"])
     s.add_dependency(%q<bundler>, ["~> 1.3.5"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.7"])
+    s.add_dependency(%q<slowweb>, ["~> 0.1.1"])
+    s.add_dependency(%q<formatador>, ["~> 0.2.4"])
     s.add_dependency(%q<pry>, ["~> 0.9.12"])
     s.add_dependency(%q<guard>, ["~> 1.8.2"])
     s.add_dependency(%q<guard-rake>, ["~> 0.0.9"])
@@ -660,7 +679,6 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rb-inotify>, ["~> 0.9"])
     s.add_dependency(%q<rb-fsevent>, ["~> 0.9"])
     s.add_dependency(%q<rdoc>, ["~> 3.12"])
-    s.add_dependency(%q<rubocop>, ["~> 0.13.0"])
   end
 end
 
