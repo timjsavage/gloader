@@ -13,9 +13,7 @@ describe GLoader do
 
       after(:each) do
         Fog::Mock.reset
-        gloader.regions.each do |region, values|
-          gloader.delete_private_key(region)
-        end
+        gloader.destroy
       end
 
       let(:gloader) do
@@ -25,9 +23,8 @@ describe GLoader do
                                  init:                   false })
       end
 
-      def create_console
-        gloader.connection('eu-west-1').servers.create({
-          availability_zone:  '',
+      def create_console(region = 'eu-west-1')
+        gloader.connection(region).servers.create({
           image_id:           'ami-ca1a14be',
           flavor_id:          'm1.medium',
           tags: {
@@ -41,7 +38,6 @@ describe GLoader do
 
       def create_agent(region)
         gloader.connection(region).servers.create({
-          availability_zone:  '',
           image_id:           'ami-ca1a14be',
           flavor_id:          'm1.medium',
           tags: {
@@ -56,7 +52,6 @@ describe GLoader do
 
       def create_other(region)
         gloader.connection(region).servers.create({
-          availability_zone:  '',
           image_id:           'ami-ca1a14be',
           flavor_id:          'm1.medium',
           tags: {
@@ -82,6 +77,32 @@ describe GLoader do
           gloader.rate_limit
           gloader.rate_limit
           SlowWeb.get_limit('amazonaws.com').host.must_equal 'amazonaws.com'
+        end
+      end
+
+      describe '#destroy' do
+        it 'should destroy all keys and security groups even if none exist' do
+          gloader.destroy
+        end
+        it 'should destroy all keys and security groups' do
+          gloader.create_key_pairs
+          gloader.create_security_groups
+
+          gloader.connection('eu-west-1').key_pairs.select do |g|
+            g.name == 'gloader-platform'
+          end.count.must_equal 1
+          gloader.connection('eu-west-1').security_groups.select do |g|
+            g.name == 'gloader'
+          end.count.must_equal 1
+
+          gloader.destroy
+
+          gloader.connection('eu-west-1').key_pairs.select do |g|
+            g.name == 'gloader-platform'
+          end.count.must_equal 0
+          gloader.connection('eu-west-1').security_groups.select do |g|
+            g.name == 'gloader'
+          end.count.must_equal 0
         end
       end
 
@@ -190,13 +211,13 @@ describe GLoader do
         end
       end
 
-      describe '#delete_security_group' do
+      describe '#destroy_security_group' do
         it 'should delete a security group even if it doesn\'t exist' do
-          gloader.delete_security_group('eu-west-1').must_equal nil
+          gloader.destroy_security_group('eu-west-1').must_equal nil
         end
         it 'should delete a existing security group' do
           gloader.create_security_group('eu-west-1')
-          gloader.delete_security_group('eu-west-1').status.must_equal 200
+          gloader.destroy_security_group('eu-west-1').status.must_equal 200
         end
       end
 
@@ -239,8 +260,7 @@ describe GLoader do
 
       describe '#private_key_exists?' do
         it 'will return false if a private key doesn\'t exist' do
-          region = 'eu-west-1'
-          gloader.private_key_exists?(region).must_equal false
+          gloader.private_key_exists?('eu-west-1').must_equal false
         end
         it 'will return true if a key already exists' do
           region = 'eu-west-1'
@@ -293,7 +313,31 @@ describe GLoader do
           type = :console
           attr = gloader.instance_attributes(type, region)
           attr[:tags][LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
+          attr[:tags][LOAD_TEST_PLATFORM_TAG_NAME].must_equal LOAD_TEST_PLATFORM_CONSOLE_TAG
           attr[:image_id].must_equal gloader.regions[region][:ami]
+        end
+        it 'will return attributes for an agent instance' do
+          region = 'eu-west-1'
+          type = :agent
+          attr = gloader.instance_attributes(type, region)
+          attr[:tags][LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
+          attr[:tags][LOAD_TEST_PLATFORM_TAG_NAME].must_equal LOAD_TEST_PLATFORM_AGENT_TAG
+          attr[:image_id].must_equal gloader.regions[region][:ami]
+        end
+      end
+
+      describe '#instance_tags' do
+        it 'will return tags for a console instance' do
+          type = :console
+          tags = gloader.instance_tags(type)
+          tags[LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
+          tags[LOAD_TEST_PLATFORM_TAG_NAME].must_equal LOAD_TEST_PLATFORM_CONSOLE_TAG
+        end
+        it 'will return tags for an agent instance' do
+          type = :agent
+          tags = gloader.instance_tags(type)
+          tags[LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
+          tags[LOAD_TEST_PLATFORM_TAG_NAME].must_equal LOAD_TEST_PLATFORM_AGENT_TAG
         end
       end
 
@@ -313,6 +357,50 @@ describe GLoader do
         end
         it 'will raise for an invalid region' do
           assert_raises(ArgumentError) { gloader.create_instance(:agent, 'foo') }
+        end
+      end
+
+      describe '#destroy_instances' do
+        it 'will destroy instances even if not available' do
+          gloader.destroy_instances(:agent).must_equal []
+        end
+        def create_platform_instances
+          create_console('eu-west-1')
+          create_agent('eu-west-1')
+          create_agent('us-east-1')
+          create_other('us-east-1')
+          console = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
+                                                  LOAD_TEST_PLATFORM_CONSOLE_TAG)
+          agents = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
+                                                 LOAD_TEST_PLATFORM_AGENT_TAG)
+          console.count.must_equal 1
+          agents.count.must_equal 2
+        end
+        it 'will destroy console instances' do
+          create_platform_instances
+          gloader.destroy_instances(:console)
+          console = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
+                                                  LOAD_TEST_PLATFORM_CONSOLE_TAG)
+          agents = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
+                                                 LOAD_TEST_PLATFORM_AGENT_TAG)
+          agents.count.must_equal 2
+          console.count.must_equal 0
+        end
+        it 'will destroy agent instances' do
+          create_platform_instances
+          gloader.destroy_instances(:agent)
+          console = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
+                                                  LOAD_TEST_PLATFORM_CONSOLE_TAG)
+          agents = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
+                                                 LOAD_TEST_PLATFORM_AGENT_TAG)
+          agents.count.must_equal 0
+          console.count.must_equal 1
+        end
+        it 'will raise for an invalid instance type' do
+          assert_raises(ArgumentError) { gloader.destroy_instances('foo', 'eu-west-1') }
+        end
+        it 'will raise for an invalid region' do
+          assert_raises(ArgumentError) { gloader.destroy_instances(:agent, 'foo') }
         end
       end
     end

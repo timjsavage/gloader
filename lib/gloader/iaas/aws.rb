@@ -29,13 +29,18 @@ module GLoader
         end
       end
 
+      def config(config = {})
+        @config ||= DEFAULTS
+        @config.merge!(config)
+      end
+
       def rate_limit
         SlowWeb.limit('amazonaws.com', 60, 60) if SlowWeb.get_limit('amazonaws.com').nil?
       end
 
-      def config(config = {})
-        @config ||= DEFAULTS
-        @config.merge!(config)
+      def destroy
+        destroy_key_pairs
+        destroy_security_groups
       end
 
       def regions
@@ -110,14 +115,18 @@ module GLoader
       def instance_size(type)
         raise ArgumentError unless type == :agent || type == :console
         if type == :agent
-          'm1.medium'
+          config[:instance_size_agent]
         else
-          'm1.medium'
+          config[:instance_size_console]
         end
       end
 
       def create_security_groups
         regions.each { |region, config| create_security_group(region) }
+      end
+
+      def destroy_security_groups
+        regions.each { |region, config| destroy_security_group(region) }
       end
 
       def create_security_group(region)
@@ -140,7 +149,7 @@ module GLoader
         )
       end
 
-      def delete_security_group(region)
+      def destroy_security_group(region)
         security_group = config[:security_group]
         if connection(region).security_groups.map { |s|s.name }.include?(security_group)
           connection(region).delete_security_group(security_group)
@@ -153,12 +162,19 @@ module GLoader
 
       def private_key_path(region)
         path = File.expand_path "~/.ssh/#{LOAD_TEST_PLATFORM_GROUP_TAG}-#{region}.key"
-        path.sub!('.key', '-test.key') if ENV['GEM_ENV']
+        path.sub!('.key', '-test.key') if ENV['GEM_ENV'] == 'test'
         path.sub('_', '-')
       end
 
       def create_key_pairs
         regions.each { |region, config| key_pair(region) }
+      end
+
+      def destroy_key_pairs
+        regions.each do |region, config|
+          destroy_key_pair(region)
+          destroy_private_key(region)
+        end
       end
 
       def key_pair(region)
@@ -178,20 +194,20 @@ module GLoader
         if key_pair_exists?(region) && private_key_exists?(region)
           connection(region).key_pairs.get(key_pair_name)
         else
-          delete_key_pair(region)
-          delete_private_key(region)
+          destroy_key_pair(region)
+          destroy_private_key(region)
           key = connection(region).key_pairs.create({ name: key_pair_name })
           File.open(private_key_path(region), 'w', 0600) { |f| f.write(key.private_key) }
           key
         end
       end
 
-      def delete_key_pair(region)
+      def destroy_key_pair(region)
         logger.info "Deleting  key pair: #{key_pair_name}"
         connection(region).delete_key_pair(key_pair_name) if key_pair_exists?(region)
       end
 
-      def delete_private_key(region)
+      def destroy_private_key(region)
         logger.info "Deleting private key: #{private_key_path(region)}"
         File.delete private_key_path(region) if File.exist? private_key_path(region)
       end
@@ -208,7 +224,7 @@ module GLoader
             LOAD_TEST_PLATFORM_GROUP_TAG    => 'true',
             'Name'                          => "#{LOAD_TEST_PLATFORM_AGENT_TAG} (#{platform_id})",
           }
-        else
+        elsif type == :console
           {
             LOAD_TEST_PLATFORM_TAG_NAME     => LOAD_TEST_PLATFORM_CONSOLE_TAG,
             LOAD_TEST_PLATFORM_TAG_NAME_ID  => platform_id,
@@ -224,7 +240,7 @@ module GLoader
           image_id:           instance_image(region),
           flavor_id:          instance_size(type),
           key_name:           key_pair(region),
-          tags:               instance_tags(region)
+          tags:               instance_tags(type)
         }
       end
 
@@ -236,6 +252,18 @@ module GLoader
         server = connection(region).servers.bootstrap(instance_attributes(type, region))
         server.wait_for(Fog.timeout, 5) { ready? && sshable? }
         server
+      end
+
+      def destroy_instances(type)
+        logger.info "Destroying instances: #{type.to_s}"
+        raise ArgumentError unless type == :agent || type == :console
+
+        tag = type == :console ? LOAD_TEST_PLATFORM_CONSOLE_TAG : LOAD_TEST_PLATFORM_AGENT_TAG
+
+        servers = find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME, tag)
+        servers.each do |server|
+          server.destroy
+        end
       end
     end
   end
