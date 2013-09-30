@@ -12,7 +12,11 @@ rescue Bundler::BundlerError => e
 end
 require 'rake'
 
-task default: [:rubocop, 'gemspec:validate', 'gloader:specs:unit', 'gloader:specs:integration']
+task default:  [:rubocop,
+                :quality,
+                'gemspec:validate',
+                'gloader:specs:unit',
+                'gloader:specs:integration']
 
 require File.expand_path(File.join(File.dirname(__FILE__), 'lib', 'gloader'))
 require File.expand_path(File.join(File.dirname(__FILE__), 'lib', 'gloader', 'version'))
@@ -27,6 +31,25 @@ namespace :gloader do
     end
   end
 end
+
+namespace :quality do
+  require 'flog'
+  require 'flog_task'
+  FlogTask.new :flog, 600, %w[lib]
+
+  require 'roodi'
+  require 'roodi_task'
+  RoodiTask.new 'roodi', ['lib/**/*.rb']
+
+  require 'reek/rake/task'
+  Reek::Rake::Task.new do |t|
+    t.source_files = 'lib/**/*.rb'
+    t.fail_on_error = false
+  end
+end
+
+desc 'Runs all code quality metrics'
+task quality: ['quality:flog', 'quality:roodi']
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
