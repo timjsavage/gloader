@@ -28,7 +28,9 @@ module GLoader
     end
 
     def config_path
-      File.expand_path '.gloader.yml'
+      path = File.expand_path '.gloader.yml'
+      path.sub!('.yml', '-test.yml') if ENV['GEM_ENV'] == 'test'
+      path
     end
   end
 end

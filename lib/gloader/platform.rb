@@ -10,6 +10,10 @@ module GLoader
     include GLoader::Iaas
     include GLoader::Core
 
+    def initialize(config = {})
+      provider(config)
+    end
+
     def status
       console = get_console
       agents  = get_agents
@@ -20,11 +24,9 @@ module GLoader
       end
 
       output do
-        Formatador.display_line('Console: ' + get_console_status)
-      end
-
-      output do
-        Formatador.display_line('Agent: ' + get_agents_status)
+        Formatador.display_line('Console: ' + get_console_status(console))
+        Formatador.display_line('Agents: ' + get_agents_status(agents))
+        Formatador.display_line('Total: ' + (console + agents).count.to_s)
       end
     end
 
@@ -40,8 +42,7 @@ module GLoader
       if console.count == 1
         console.first.id + '(' +
         [console.first.dns_name,
-         console.first.flavor_id,
-         console.first.availability_zone].join(' - ') + ')'
+         console.first.flavor_id].join(' - ') + ')'
       else
         'Not running'
       end
@@ -51,29 +52,34 @@ module GLoader
       if agents.count > 0
         agents.first.id + '(e.g. ' +
         [agents.first.dns_name,
-         agents.first.flavor_id,
-         agents.first.availability_zone].join(' - ') + ')'
+         agents.first.flavor_id].join(' - ') + ')'
       else
         '0'
       end
     end
 
     def create
+      create_console && create_agents
     end
 
     def create_console
+      provider.create_instance(:console, config[:region])
     end
 
     def create_agents
+      provider.create_instance(:agent, config[:region])
     end
 
     def destroy
-    end
-
-    def destroy_agents
+      destroy_console && destroy_agents
     end
 
     def destroy_console
+      provider.destroy_instances(:console)
+    end
+
+    def destroy_agents
+      provider.destroy_instances(:agent)
     end
 
     def deploy_scripts
