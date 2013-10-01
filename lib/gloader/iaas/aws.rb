@@ -248,10 +248,14 @@ module GLoader
         logger.info "Creating instance: #{type.to_s} in #{region}"
         raise ArgumentError unless type == :agent || type == :console
         raise ArgumentError unless regions[region]
-        Fog.credentials = Fog.credentials.merge({ private_key_path: private_key_path(region) })
-        server = connection(region).servers.bootstrap(instance_attributes(type, region))
+        server = bootstrap_instance(type, region)
         server.wait_for(Fog.timeout, 5) { ready? && sshable? }
         server
+      end
+
+      def bootstrap_instance(type, region)
+        Fog.credentials = Fog.credentials.merge({ private_key_path: private_key_path(region) })
+        connection(region).servers.bootstrap(instance_attributes(type, region))
       end
 
       def destroy_instances(type)
