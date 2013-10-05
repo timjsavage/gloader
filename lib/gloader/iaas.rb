@@ -1,5 +1,7 @@
 # Encoding: utf-8
 
+require 'formatador'
+
 require_relative 'iaas/aws'
 require_relative 'iaas/rackspace'
 

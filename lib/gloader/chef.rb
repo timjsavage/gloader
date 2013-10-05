@@ -1,7 +1,7 @@
 # Encoding: utf-8
 
 module GLoader
-  class Chef
+  module Chef
 
   end
 end

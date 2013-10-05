@@ -15,11 +15,31 @@ module GLoader
       include GLoader::Core
       include GLoader::Logger
 
+      DEFAULTS = {
+        platform_id:            'default',
+        instance_size_agent:    '4',
+        instance_size_console:  '4',
+        region:                 'lon',
+        availability_zone:      '',
+        distribution:           'single',
+        security_group:         'gloader'
+      }
+
+      def initialize(config = {})
+        config(config)
+        rate_limit
+      end
+
+      def config(config = {})
+        @config ||= DEFAULTS
+        @config.merge!(config)
+      end
+
       def rate_limit
         SlowWeb.limit('rackspacecloud.com', 60, 60) if SlowWeb.get_limit('rackspacecloud.com').nil?
       end
 
-      def connection(region)
+      def connection
         @connection ||= Fog::Compute.new({
           provider:           'Rackspace',
           rackspace_username: config[:rackspace_username],
@@ -36,9 +56,11 @@ module GLoader
           rackspace_username: config[:rackspace_username],
           rackspace_api_key:  config[:rackspace_api_key],
           rackspace_auth_url: Fog::Rackspace::UK_AUTH_ENDPOINT,
-          rackspace_region:   :lon,
-          version:            :v2
+          rackspace_region:   :lon
         })
+      end
+
+      def destroy
       end
     end
   end

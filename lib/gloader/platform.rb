@@ -1,13 +1,14 @@
 # Encoding: utf-8
 
-require 'formatador'
 require_relative 'console'
 require_relative 'iaas'
+require_relative 'chef'
 
 module GLoader
   class Platform
 
     include GLoader::Iaas
+    include GLoader::Chef
     include GLoader::Core
 
     def initialize(config = {})
@@ -23,15 +24,24 @@ module GLoader
     end
 
     def create_console
+      # TODO
+      # Create Insance
+      # Create Chef node JSON
+      # Converge using Chef
       provider.create_instance(:console, config[:region])
     end
 
     def create_agents
+      # TODO
+      # Fork
+      ## Create Insance
+      ## Create Chef node JSON
+      ## Converge using Chef
       provider.create_instance(:agent, config[:region])
     end
 
     def destroy
-      destroy_console && destroy_agents
+      destroy_console && destroy_agents && destroy_dependencies
     end
 
     def destroy_console
@@ -40,6 +50,10 @@ module GLoader
 
     def destroy_agents
       provider.destroy_instances(:agent)
+    end
+
+    def destroy_dependencies
+      provider.destroy
     end
 
     def deploy_scripts
