@@ -1,4 +1,4 @@
 ---
 platform_id: megaload-us
-  test:
-    current: load_test_2013_10_04_14_28_55_UTC_Friday
+test:
+  current: load_test_2013_10_04_14_28_55_UTC_Friday
