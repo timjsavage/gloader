@@ -26,5 +26,18 @@ describe GLoader do
         gloader.provider.must_be_instance_of GLoader::Iaas::Aws
       end
     end
+
+    describe '#get_console_instance' do
+      it 'should have a test' do
+        skip
+      end
+    end
+
+    describe '#get_agents_instances' do
+      it 'should have a test' do
+        skip
+      end
+    end
+
   end
 end

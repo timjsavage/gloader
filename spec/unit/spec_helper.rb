@@ -13,7 +13,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 ]
 SimpleCov.start do
   add_filter '/spec/'
-  minimum_coverage 90
+  minimum_coverage 70
   refuse_coverage_drop
 end
 
@@ -26,6 +26,7 @@ require_relative '../../lib/gloader/logger'
 require_relative '../../lib/gloader/core'
 require_relative '../../lib/gloader/config'
 require_relative '../../lib/gloader/console'
+require_relative '../../lib/gloader/chef'
 require_relative '../../lib/gloader/cli'
 require_relative '../../lib/gloader/iaas'
 require_relative '../../lib/gloader/platform'
