@@ -128,7 +128,7 @@ describe GLoader do
         end
       end
 
-      describe '#connection_s3' do
+      describe '#connection_storage' do
         before(:each) do
           Fog.mock!
         end
@@ -136,9 +136,9 @@ describe GLoader do
           Fog::Mock.reset
         end
         it 'should return a S3 connection for a region' do
-          gloader.connection_s3.must_be_instance_of Fog::Storage::AWS::Mock
-          gloader.connection_s3.directories.must_be_instance_of Fog::Storage::AWS::Directories
-          gloader.connection_s3.directories.must_equal []
+          gloader.connection_storage.must_be_instance_of Fog::Storage::AWS::Mock
+          gloader.connection_storage.directories.must_be_instance_of Fog::Storage::AWS::Directories
+          gloader.connection_storage.directories.must_equal []
         end
       end
 
