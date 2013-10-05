@@ -14,7 +14,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 SimpleCov.start do
   add_filter '/spec/'
   minimum_coverage 70
-  refuse_coverage_drop
+  #refuse_coverage_drop
 end
 
 require 'minitest/autorun'
