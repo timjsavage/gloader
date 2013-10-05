@@ -8,6 +8,8 @@ module GLoader
 
     class_option :aws_id, type: :string, desc: 'AWS ID'
     class_option :aws_key, type: :string, desc: 'AWS key'
+    class_option :rackspace_user, type: :string, desc: 'Rackspace username'
+    class_option :rackspace_api_key, type: :string, desc: 'Rackspace API key'
     class_option :verbose, type: :boolean, aliases: :v, desc: 'Verbose output'
     class_option :very_verbose, type: :boolean, aliases: :V, desc: 'VERY Verbose output'
     class_option :id, type: :string, desc: 'Platform ID to allow multi-tenancy in a single IaaS'
@@ -17,15 +19,12 @@ module GLoader
     end
 
     desc 'create', 'Create a load test plaform'
-    option :agents, type: :numeric, aliases: :a
-    option :eip, type: :string, aliases: :e, desc: 'Elastic IP to use for the console'
-    option :host, type: :string, aliases: :e, desc: 'Host name to use for the console'
-    option :image, type: :string, desc: 'IaaS image to use'
+    option :agents, type: :numeric, aliases: :a, desc: 'Number of agents required'
     option :region, type: :string, desc: 'IaaS region to use'
-    option :az, type: :string, desc: 'IaaS availablity zone to use'
     option :distribution, type: :string, aliases: :d, desc: 'Region Distibution'
-    option :key_pair, type: :string, desc: 'Key Pair to use'
-    option :agent_size, type: :string, desc: 'IaaS insance size to use for agents'
+    option :agent_size,
+           type: :string,
+           desc: 'IaaS insance size to use for agents (small|medium|large)'
     option :console_size, type: :string, desc: 'IaaS insance size to use for the concole'
     def create
       confirmation = yes?('Are you sure?', :green)
@@ -47,6 +46,8 @@ module GLoader
 
     class_option :aws_id, type: :string, desc: 'AWS ID'
     class_option :aws_key, type: :string, desc: 'AWS key'
+    class_option :rackspace_user, type: :string, desc: 'Rackspace username'
+    class_option :rackspace_api_key, type: :string, desc: 'Rackspace API key'
     class_option :verbose, type: :boolean, aliases: :v, desc: 'Verbose output'
     class_option :very_verbose, type: :boolean, aliases: :V, desc: 'VERY Verbose output'
     class_option :id, type: :string, desc: 'Platform ID to allow multi-tenancy in a single IaaS'
