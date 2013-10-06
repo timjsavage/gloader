@@ -44,8 +44,12 @@ describe GLoader do
       end
 
       describe '#connection' do
-        it 'should return a connection' do
-          gloader.connection.must_be_instance_of Fog::Compute::RackspaceV2::Mock
+        it 'should return a connection for a region' do
+          gloader.connection(:lon).must_be_instance_of Fog::Compute::RackspaceV2::Mock
+          gloader.connection(:ord).must_be_instance_of Fog::Compute::RackspaceV2::Mock
+        end
+        it 'will raise if region is empty' do
+          assert_raises(ArgumentError) { gloader.connection }
         end
       end
 
