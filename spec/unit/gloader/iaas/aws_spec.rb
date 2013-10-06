@@ -110,9 +110,9 @@ describe GLoader do
       describe '#regions' do
         it 'should return a hash of Iaas regions' do
           gloader.regions.length.must_equal 8
-          gloader.regions['eu-west-1'][:ami].must_equal 'ami-ca1a14be'
+          gloader.regions['eu-west-1'][:image_id].must_equal 'ami-ca1a14be'
           gloader.regions.each_pair do |region, config|
-            config[:ami].must_match /^ami-[a-z0-9]+$/
+            config[:image_id].must_match /^ami-[a-z0-9]+$/
             config[:weight].must_be_instance_of Fixnum
           end
         end
@@ -279,7 +279,7 @@ describe GLoader do
           attr = gloader.instance_attributes(type, region)
           attr[:tags][LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
           attr[:tags][LOAD_TEST_PLATFORM_TAG_NAME].must_equal LOAD_TEST_PLATFORM_CONSOLE_TAG
-          attr[:image_id].must_equal gloader.regions[region][:ami]
+          attr[:image_id].must_equal gloader.regions[region][:image_id]
         end
         it 'will return attributes for an agent instance' do
           region = 'eu-west-1'
@@ -287,7 +287,7 @@ describe GLoader do
           attr = gloader.instance_attributes(type, region)
           attr[:tags][LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
           attr[:tags][LOAD_TEST_PLATFORM_TAG_NAME].must_equal LOAD_TEST_PLATFORM_AGENT_TAG
-          attr[:image_id].must_equal gloader.regions[region][:ami]
+          attr[:image_id].must_equal gloader.regions[region][:image_id]
         end
       end
 

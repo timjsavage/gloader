@@ -46,14 +46,14 @@ module GLoader
 
       def regions
         {
-          'eu-west-1'       => { ami: 'ami-ca1a14be', weight: 1 },
-          'ap-northeast-1'  => { ami: 'ami-0366e302', weight: 1 },
-          'ap-southeast-1'  => { ami: 'ami-42e1a310', weight: 1 },
-          'ap-southeast-2'  => { ami: 'ami-eebd2bd4', weight: 1 },
-          'sa-east-1'       => { ami: 'ami-2f6ab232', weight: 1 },
-          'us-east-1'       => { ami: 'ami-21e47148', weight: 1 },
-          'us-west-1'       => { ami: 'ami-e63013a3', weight: 1 },
-          'us-west-2'       => { ami: 'ami-6ec8425e', weight: 1 }
+          'eu-west-1'       => { image_id: 'ami-ca1a14be', weight: 1 },
+          'ap-northeast-1'  => { image_id: 'ami-0366e302', weight: 1 },
+          'ap-southeast-1'  => { image_id: 'ami-42e1a310', weight: 1 },
+          'ap-southeast-2'  => { image_id: 'ami-eebd2bd4', weight: 1 },
+          'sa-east-1'       => { image_id: 'ami-2f6ab232', weight: 1 },
+          'us-east-1'       => { image_id: 'ami-21e47148', weight: 1 },
+          'us-west-1'       => { image_id: 'ami-e63013a3', weight: 1 },
+          'us-west-2'       => { image_id: 'ami-6ec8425e', weight: 1 }
         }
       end
 
@@ -118,7 +118,7 @@ module GLoader
 
       def instance_image(region)
         raise ArgumentError unless regions[region]
-        regions[region][:ami]
+        regions[region][:image_id]
       end
 
       def instance_size(type)
