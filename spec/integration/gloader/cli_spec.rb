@@ -26,7 +26,7 @@ describe 'GLoader CLI' do
       out, _err = capture_io do
         GLoader::CLI.start(['build'])
       end
-        out.must_match /gloader build create/
+      out.must_match /gloader build create/
     end
     it 'should show help for the test command' do
       out, _err = capture_io do

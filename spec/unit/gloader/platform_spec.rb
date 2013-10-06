@@ -17,8 +17,8 @@ describe GLoader do
     end
 
     subject do
-      GLoader::Platform.new({ aws_access_key_id:      'foo',
-                              aws_secret_access_key:  'bar',
+      GLoader::Platform.new({ aws_id:      'foo',
+                              aws_key:  'bar',
                               platform_id:            'default',
                               region:                 'eu-west-1' })
     end

@@ -10,8 +10,8 @@ describe GLoader do
         include GLoader::Iaas
       end
       gloader = Test.new
-      gloader.provider({ aws_access_key_id:      'foo',
-                         aws_secret_access_key:  'bar',
+      gloader.provider({ aws_id:      'foo',
+                         aws_key:  'bar',
                          platform_id:            'default' })
       gloader
     end

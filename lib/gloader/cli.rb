@@ -8,14 +8,16 @@ module GLoader
 
     class_option :aws_id, type: :string, desc: 'AWS ID'
     class_option :aws_key, type: :string, desc: 'AWS key'
-    class_option :rackspace_user, type: :string, desc: 'Rackspace username'
-    class_option :rackspace_api_key, type: :string, desc: 'Rackspace API key'
+    class_option :rackspace_id, type: :string, desc: 'Rackspace username'
+    class_option :rackspace_key, type: :string, desc: 'Rackspace API key'
     class_option :verbose, type: :boolean, aliases: :v, desc: 'Verbose output'
     class_option :very_verbose, type: :boolean, aliases: :V, desc: 'VERY Verbose output'
     class_option :id, type: :string, desc: 'Platform ID to allow multi-tenancy in a single IaaS'
+    class_option :non_interactive, aliases: :n, type: :boolean, desc: 'Non-interactive'
 
     desc 'status', 'Get the status of the platform'
     def status
+      GLoader::Platform.new(options).status
     end
 
     desc 'create', 'Create a load test plaform'
@@ -27,14 +29,14 @@ module GLoader
            desc: 'IaaS insance size to use for agents (small|medium|large)'
     option :console_size, type: :string, desc: 'IaaS insance size to use for the concole'
     def create
-      confirmation = yes?('Are you sure?', :green)
-      say('Created!', :green) if confirmation
+      confirmation = options[:non_interactive] || yes?('Are you sure?', :green)
+      GLoader::Platform.new(options).create if confirmation
     end
 
     desc 'destroy', 'Destroy a load test plaform'
     def destroy
-      confirmation = yes?('Are you sure?', :green)
-      say('Destroyed!', :green) if confirmation
+      confirmation = options[:non_interactive] || yes?('Are you sure?', :green)
+      GLoader::Platform.new(options).destroy if confirmation
     end
 
     desc 'failing', 'Report on which agents are failing'
@@ -46,8 +48,8 @@ module GLoader
 
     class_option :aws_id, type: :string, desc: 'AWS ID'
     class_option :aws_key, type: :string, desc: 'AWS key'
-    class_option :rackspace_user, type: :string, desc: 'Rackspace username'
-    class_option :rackspace_api_key, type: :string, desc: 'Rackspace API key'
+    class_option :rackspace_id, type: :string, desc: 'Rackspace username'
+    class_option :rackspace_key, type: :string, desc: 'Rackspace API key'
     class_option :verbose, type: :boolean, aliases: :v, desc: 'Verbose output'
     class_option :very_verbose, type: :boolean, aliases: :V, desc: 'VERY Verbose output'
     class_option :id, type: :string, desc: 'Platform ID to allow multi-tenancy in a single IaaS'

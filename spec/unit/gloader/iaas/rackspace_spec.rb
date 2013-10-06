@@ -17,17 +17,17 @@ describe GLoader do
       end
 
       let(:gloader) do
-        GLoader::Iaas::Rackspace.new({ rackspace_username:     'foo2',
-                                       rackspace_api_key:      'bar2',
-                                       platform_id:            'default',
-                                       init:                   false })
+        GLoader::Iaas::Rackspace.new({ rackspace_id:  'foo2',
+                                       rackspace_key: 'bar2',
+                                       platform_id:   'default',
+                                       init:          false })
       end
 
       describe '#config' do
         it 'should return default config' do
           gloader.config[:instance_size_agent].must_equal '4'
           gloader.config[:instance_size_console].must_equal '4'
-          gloader.config[:rackspace_username].must_equal 'foo2'
+          gloader.config[:rackspace_id].must_equal 'foo2'
         end
       end
 

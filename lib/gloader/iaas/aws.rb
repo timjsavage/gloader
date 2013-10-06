@@ -3,6 +3,7 @@
 require 'fog'
 require 'sshkey'
 require 'slowweb'
+require 'active_support'
 
 module GLoader
   module Iaas
@@ -32,7 +33,7 @@ module GLoader
 
       def config(config = {})
         @config ||= DEFAULTS
-        @config.merge!(config)
+        @config.merge!(config).symbolize_keys!
       end
 
       def rate_limit
@@ -63,10 +64,10 @@ module GLoader
           @connection[region]
         else
           @connection.merge!({ region => Fog::Compute.new({
-            provider:                'AWS',
-            aws_access_key_id:        config[:aws_access_key_id],
-            aws_secret_access_key:    config[:aws_secret_access_key],
-            region:                   region
+            provider:               'AWS',
+            aws_access_key_id:      config[:aws_id],
+            aws_secret_access_key:  config[:aws_key],
+            region:                 region
           }) })
         end
         @connection[region]
@@ -74,9 +75,9 @@ module GLoader
 
       def connection_storage
         @connection_storage ||= Fog::Storage.new({
-          provider:                 'AWS',
-          aws_access_key_id:        config[:aws_access_key_id],
-          aws_secret_access_key:    config[:aws_secret_access_key],
+          provider:               'AWS',
+          aws_access_key_id:      config[:aws_id],
+          aws_secret_access_key:  config[:aws_key]
         })
       end
 
@@ -244,11 +245,12 @@ module GLoader
       end
 
       def create_instance(type, region = nil)
-        logger.info "Creating instance: #{type.to_s} in #{region}"
         raise ArgumentError unless type == :agent || type == :console
         region = config[:region] if region.nil?
+        logger.info "Creating instance: #{type.to_s} in #{region}"
         server = bootstrap_instance(type, region)
         server.wait_for(Fog.timeout, 5) { ready? && sshable? }
+        logger.info "Created instance (#{server.id}): #{type.to_s} in #{region}"
         server
       end
 

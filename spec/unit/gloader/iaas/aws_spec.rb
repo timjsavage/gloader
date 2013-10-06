@@ -17,8 +17,8 @@ describe GLoader do
       end
 
       let(:gloader) do
-        GLoader::Iaas::Aws.new({ aws_access_key_id:      'foo',
-                                 aws_secret_access_key:  'bar',
+        GLoader::Iaas::Aws.new({ aws_id:      'foo',
+                                 aws_key:  'bar',
                                  platform_id:            'default',
                                  init:                   false })
       end
@@ -64,7 +64,7 @@ describe GLoader do
         it 'should return default config' do
           gloader.config[:instance_size_agent].must_equal 'm1.medium'
           gloader.config[:instance_size_console].must_equal 'm1.medium'
-          gloader.config[:aws_access_key_id].must_equal 'foo'
+          gloader.config[:aws_id].must_equal 'foo'
         end
       end
 
@@ -309,8 +309,8 @@ describe GLoader do
       describe '#create_instance' do
 
         let(:gloader) do
-          GLoader::Iaas::Aws.new({ aws_access_key_id:      'foo',
-                                   aws_secret_access_key:  'bar',
+          GLoader::Iaas::Aws.new({ aws_id:      'foo',
+                                   aws_key:  'bar',
                                    platform_id:            'default' })
         end
 
