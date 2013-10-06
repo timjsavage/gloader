@@ -35,7 +35,9 @@ end
 namespace :quality do
   require 'flog'
   require 'flog_task'
-  FlogTask.new :flog, 700, %w[lib]
+  FlogTask.new :flog_total, 700, %w[lib]
+  FlogTask.new :flog_average, 10, %w[lib], :average
+  FlogTask.new :flog_max_method, 40, %w[lib], :max_method
 
   require 'roodi'
   require 'roodi_task'
@@ -49,7 +51,10 @@ namespace :quality do
 end
 
 desc 'Runs all code quality metrics'
-task quality: ['quality:flog', 'quality:roodi']
+task quality: ['quality:flog_total',
+               'quality:flog_average',
+               'quality:flog_max_method',
+               'quality:roodi']
 
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
