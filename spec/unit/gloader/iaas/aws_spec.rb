@@ -85,11 +85,12 @@ describe GLoader do
           gloader.destroy
         end
         it 'should destroy all keys and security groups' do
-          gloader.create_key_pairs
+          gloader.create_local_keys
           gloader.create_security_groups
+          gloader.connection('eu-west-1').key_pairs.create({ name: 'fog_gloader_platform' })
 
           gloader.connection('eu-west-1').key_pairs.select do |g|
-            g.name == 'gloader-platform'
+            g.name == 'fog_gloader_platform'
           end.count.must_equal 1
           gloader.connection('eu-west-1').security_groups.select do |g|
             g.name == 'gloader'
@@ -98,7 +99,7 @@ describe GLoader do
           gloader.destroy
 
           gloader.connection('eu-west-1').key_pairs.select do |g|
-            g.name == 'gloader-platform'
+            g.name == 'fog_gloader_platform'
           end.count.must_equal 0
           gloader.connection('eu-west-1').security_groups.select do |g|
             g.name == 'gloader'
@@ -240,70 +241,34 @@ describe GLoader do
         end
       end
 
-      describe '#key_pair' do
-        it 'will return a region\'s key pair' do
-          gloader.key_pair('eu-west-1').must_equal LOAD_TEST_PLATFORM_GROUP_TAG
-        end
-      end
-
-      describe '#key_pair_exists?' do
+      describe '#iaas_key_exists?' do
         it 'will return false if a key doesn\'t exist' do
           region = 'eu-west-1'
-          gloader.key_pair_exists?(region).must_equal false
+          gloader.iaas_key_exists?(region).must_equal false
         end
         it 'will return true if a key already exists' do
           region = 'eu-west-1'
-          gloader.create_key_pair(region)
-          gloader.key_pair_exists?(region).must_equal true
+          gloader.connection(region).key_pairs.create({ name: gloader.key_name(true) })
+          gloader.iaas_key_exists?(region).must_equal true
         end
       end
 
-      describe '#private_key_exists?' do
+      describe '#local_keys_exists?' do
         it 'will return false if a private key doesn\'t exist' do
-          gloader.private_key_exists?('eu-west-1').must_equal false
+          gloader.local_keys_exists?.must_equal false
         end
         it 'will return true if a key already exists' do
-          region = 'eu-west-1'
-          gloader.create_key_pair(region)
-          gloader.private_key_exists?(region).must_equal true
+          gloader.create_local_keys
+          gloader.local_keys_exists?.must_equal true
         end
       end
 
-      describe '#create_key_pair' do
-        it 'will create a key and key file' do
-          region = 'eu-west-1'
-          key = gloader.create_key_pair(region)
-          key.must_be_instance_of Fog::Compute::AWS::KeyPair
-          IO.read(gloader.private_key_path(region)).must_equal key.private_key
+      describe '#key_name' do
+        it 'will return a key pair name withoug a prefix by default' do
+          gloader.key_name.must_equal 'gloader_platform'
         end
-        it 'will not create a key and key file if they already exist' do
-          region = 'eu-west-1'
-          gloader.create_key_pair(region)
-          key = gloader.create_key_pair(region)
-          key.must_be_instance_of Fog::Compute::AWS::KeyPair
-        end
-        it 'will create a key and key file if a key pair but no private key file exists' do
-          region = 'eu-west-1'
-          gloader.create_key_pair(region)
-          private_key_path = gloader.private_key_path(region)
-          File.delete(private_key_path)
-
-          key = gloader.create_key_pair(region)
-          IO.read(gloader.private_key_path(region)).must_equal key.private_key
-        end
-        it 'will create a key and key file if a private key file but no key pair exists' do
-          region = 'eu-west-1'
-          gloader.create_key_pair(region)
-          gloader.connection(region).delete_key_pair(gloader.key_pair_name)
-
-          key = gloader.create_key_pair(region)
-          IO.read(gloader.private_key_path(region)).must_equal key.private_key
-        end
-      end
-
-      describe '#key_pair_name' do
-        it 'will return a key pair name' do
-          gloader.key_pair_name.must_equal LOAD_TEST_PLATFORM_GROUP_TAG
+        it 'will return a key pair name with a prefix' do
+          gloader.key_name(true).must_equal 'fog_gloader_platform'
         end
       end
 
@@ -342,8 +307,18 @@ describe GLoader do
       end
 
       describe '#create_instance' do
+
+        let(:gloader) do
+          GLoader::Iaas::Aws.new({ aws_access_key_id:      'foo',
+                                   aws_secret_access_key:  'bar',
+                                   platform_id:            'default' })
+        end
+
         it 'will create an agent instance' do
           gloader.create_instance(:agent, 'eu-west-1').must_be_instance_of Fog::Compute::AWS::Server
+          servers = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
+                                                  LOAD_TEST_PLATFORM_AGENT_TAG)
+          servers.first.key_name.must_equal 'fog_gloader_platform'
         end
         it 'will create a console instance' do
           server = gloader.create_instance(:console, 'eu-west-1')

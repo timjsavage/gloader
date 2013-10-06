@@ -18,11 +18,11 @@ module GLoader
     end
 
     def get_console_instance
-      provider.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME, LOAD_TEST_PLATFORM_CONSOLE_TAG)
+      provider.get_console_instance
     end
 
     def get_agents_instances
-      provider.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME, LOAD_TEST_PLATFORM_AGENT_TAG)
+      provider.get_agents_instances
     end
 
     def get_status

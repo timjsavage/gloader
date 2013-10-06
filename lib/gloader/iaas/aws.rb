@@ -1,6 +1,7 @@
 # Encoding: utf-8
 
 require 'fog'
+require 'sshkey'
 require 'slowweb'
 
 module GLoader
@@ -25,7 +26,7 @@ module GLoader
         rate_limit
         unless config[:init] == false
           create_security_groups
-          create_key_pairs
+          create_local_keys
         end
       end
 
@@ -39,7 +40,7 @@ module GLoader
       end
 
       def destroy
-        destroy_key_pairs
+        destroy_keys
         destroy_security_groups
       end
 
@@ -107,6 +108,14 @@ module GLoader
         server_value == config[:platform_id]
       end
 
+      def get_console_instance
+        find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME, LOAD_TEST_PLATFORM_CONSOLE_TAG)
+      end
+
+      def get_agents_instances
+        find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME, LOAD_TEST_PLATFORM_AGENT_TAG)
+      end
+
       def instance_image(region)
         raise ArgumentError unless regions[region]
         regions[region][:ami]
@@ -156,60 +165,49 @@ module GLoader
         end
       end
 
-      def key_pair_name
-        LOAD_TEST_PLATFORM_GROUP_TAG
+      def key_name(prefix = false)
+        (prefix ? 'fog_' : '') + LOAD_TEST_PLATFORM_GROUP_TAG.sub('-', '_')
       end
 
-      def private_key_path(region)
-        path = File.expand_path "~/.ssh/#{LOAD_TEST_PLATFORM_GROUP_TAG}-#{region}.key"
+      def key_path(type)
+        path = File.expand_path ".#{LOAD_TEST_PLATFORM_GROUP_TAG}-#{type.to_s}.key"
         path.sub!('.key', '-test.key') if ENV['GEM_ENV'] == 'test'
-        path.sub('_', '-')
+        path.sub('-', '_')
       end
 
-      def create_key_pairs
-        regions.each { |region, config| key_pair(region) }
-      end
-
-      def destroy_key_pairs
+      def destroy_keys
         regions.each do |region, config|
-          destroy_key_pair(region)
-          destroy_private_key(region)
+          destroy_iaas_key(region)
+        end
+        destroy_local_keys
+      end
+
+      def iaas_key_exists?(region)
+        connection(region).key_pairs.get(key_name(true)).nil? ? false : true
+      end
+
+      def local_keys_exists?
+        File.readable?(key_path(:private)) && File.readable?(key_path(:public))
+      end
+
+      def create_local_keys
+        unless local_keys_exists?
+          destroy_keys
+          keys = SSHKey.generate
+          File.open(key_path(:public), 'w', 0600) { |f| f.write(keys.ssh_public_key) }
+          File.open(key_path(:private), 'w', 0600) { |f| f.write(keys.private_key) }
         end
       end
 
-      def key_pair(region)
-        create_key_pair(region)
-        key_pair_name
+      def destroy_iaas_key(region)
+        logger.info "Deleting  key pair: #{key_name}"
+        connection(region).delete_key_pair(key_name(true)) if iaas_key_exists?(region)
       end
 
-      def key_pair_exists?(region)
-        connection(region).key_pairs.get(key_pair_name).nil? ? false : true
-      end
-
-      def private_key_exists?(region)
-        File.readable?(private_key_path(region))
-      end
-
-      def create_key_pair(region)
-        if key_pair_exists?(region) && private_key_exists?(region)
-          connection(region).key_pairs.get(key_pair_name)
-        else
-          destroy_key_pair(region)
-          destroy_private_key(region)
-          key = connection(region).key_pairs.create({ name: key_pair_name })
-          File.open(private_key_path(region), 'w', 0600) { |f| f.write(key.private_key) }
-          key
-        end
-      end
-
-      def destroy_key_pair(region)
-        logger.info "Deleting  key pair: #{key_pair_name}"
-        connection(region).delete_key_pair(key_pair_name) if key_pair_exists?(region)
-      end
-
-      def destroy_private_key(region)
-        logger.info "Deleting private key: #{private_key_path(region)}"
-        File.delete private_key_path(region) if File.exist? private_key_path(region)
+      def destroy_local_keys
+        logger.info "Deleting private key: #{key_path(:private)}"
+        File.delete key_path(:private) if File.exist? key_path(:private)
+        File.delete key_path(:public) if File.exist? key_path(:public)
       end
 
       def platform_id
@@ -239,7 +237,8 @@ module GLoader
           availability_zone:  '',
           image_id:           instance_image(region),
           flavor_id:          instance_size(type),
-          key_name:           key_pair(region),
+          private_key_path:   key_path(:private),
+          public_key_path:    key_path(:public),
           tags:               instance_tags(type)
         }
       end
@@ -254,7 +253,7 @@ module GLoader
       end
 
       def bootstrap_instance(type, region)
-        Fog.credentials = Fog.credentials.merge({ private_key_path: private_key_path(region) })
+        Fog.credential = key_name
         connection(region).servers.bootstrap(instance_attributes(type, region))
       end
 
