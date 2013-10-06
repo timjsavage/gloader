@@ -21,13 +21,13 @@ module GLoader
       provider.get_console_instance
     end
 
-    def get_agents_instances
-      provider.get_agents_instances
+    def get_agent_instances
+      provider.get_agent_instances
     end
 
     def get_status
       console = get_console_instance
-      agents  = get_agents_instances
+      agents  = get_agent_instances
 
       unless (console + agents).count > 0
         Formatador.display_line('[red]No instances found[/]')

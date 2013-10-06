@@ -28,7 +28,7 @@ module GLoader
       # Create Insance
       # Create Chef node JSON
       # Converge using Chef
-      provider.create_instance(:console, config[:region])
+      provider.create_instance(:console) unless provider.get_console_instance.size == 1
     end
 
     def create_agents
@@ -37,7 +37,7 @@ module GLoader
       ## Create Insance
       ## Create Chef node JSON
       ## Converge using Chef
-      provider.create_instance(:agent, config[:region])
+      provider.create_instance(:agent)
     end
 
     def destroy

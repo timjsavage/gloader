@@ -112,7 +112,7 @@ module GLoader
         find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME, LOAD_TEST_PLATFORM_CONSOLE_TAG)
       end
 
-      def get_agents_instances
+      def get_agent_instances
         find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME, LOAD_TEST_PLATFORM_AGENT_TAG)
       end
 
@@ -243,10 +243,10 @@ module GLoader
         }
       end
 
-      def create_instance(type, region)
+      def create_instance(type, region = nil)
         logger.info "Creating instance: #{type.to_s} in #{region}"
         raise ArgumentError unless type == :agent || type == :console
-        raise ArgumentError unless regions[region]
+        region = config[:region] if region.nil?
         server = bootstrap_instance(type, region)
         server.wait_for(Fog.timeout, 5) { ready? && sshable? }
         server

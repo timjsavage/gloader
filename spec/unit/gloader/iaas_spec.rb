@@ -99,7 +99,7 @@ describe GLoader do
       end
     end
 
-    describe '#get_agents_instances' do
+    describe '#get_agent_instances' do
       it 'should have a test' do
         skip
       end
