@@ -2,7 +2,7 @@ source 'https://rubygems.org/'
 
 gem 'fog', '~> 1.15.0'
 gem 'httparty', '~> 0.11.0'
-gem 'yajl-ruby', '~> 1.1.0'
+gem 'json', '~> 1.8.0'
 gem 'sshkey', '~> 1.6.0'
 gem 'net-ssh', '~> 2.7.0'
 gem 'thor', '~> 0.18.1'

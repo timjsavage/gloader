@@ -1,7 +1,7 @@
 # Encoding: utf-8
 
 require 'httparty'
-require 'yajl'
+require 'json'
 
 module GLoader
   module Console
@@ -23,7 +23,7 @@ module GLoader
     def make_console_api_request(method, resource, options = {})
       logger.info "Request: #{method} #{console_url}#{resource}"
       response = HTTParty.send(method.to_sym, console_url + '/' + resource, options)
-      Yajl::Parser.parse(response.body, symbolize_keys: true)
+      JSON.parse(response.body, symbolize_names: true)
     end
   end
 end

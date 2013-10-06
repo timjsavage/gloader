@@ -44,7 +44,7 @@ describe GLoader do
       end
 
       describe '#connection' do
-        it 'should return a connection for a region' do
+        it 'should return a connection' do
           gloader.connection.must_be_instance_of Fog::Compute::RackspaceV2::Mock
         end
       end
