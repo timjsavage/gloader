@@ -35,7 +35,7 @@ end
 namespace :quality do
   require 'flog'
   require 'flog_task'
-  FlogTask.new :flog, 600, %w[lib]
+  FlogTask.new :flog, 700, %w[lib]
 
   require 'roodi'
   require 'roodi_task'
