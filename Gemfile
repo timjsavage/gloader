@@ -18,6 +18,7 @@ group :development do
   gem 'guard', '~> 1.8.2'
   gem 'guard-rake', '~> 0.0.9'
   gem 'guard-rubocop', '~> 0.2.2'
+  gem 'guard-bundler'
   gem 'growl', '~> 1.0.3'
   gem 'rb-inotify', '~> 0.9'
   gem 'rb-fsevent', '~> 0.9'
