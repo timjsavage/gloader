@@ -204,14 +204,21 @@ module GLoader
       end
 
       def destroy_iaas_key(region)
-        logger.info "Deleting  key pair: #{key_name}"
-        connection(region).delete_key_pair(key_name(true)) if iaas_key_exists?(region)
+        if iaas_key_exists?(region)
+          logger.info "Deleting key pair: #{key_name}"
+          connection(region).delete_key_pair(key_name(true))
+        end
       end
 
       def destroy_local_keys
-        logger.info "Deleting private key: #{key_path(:private)}"
-        File.delete key_path(:private) if File.exist? key_path(:private)
-        File.delete key_path(:public) if File.exist? key_path(:public)
+        if File.exist? key_path(:private)
+          logger.info "Deleting private key: #{key_path(:private)}"
+          File.delete key_path(:private)
+        end
+        if File.exist? key_path(:public)
+          logger.info "Deleting public key: #{key_path(:public)}"
+          File.delete key_path(:public)
+        end
       end
 
       def platform_id
