@@ -13,6 +13,8 @@ test/tmp
 test/version_tmp
 tmp
 .*.key
+.gloader-default.yml
+.gloader-state.yml
 
 # YARD artifacts
 .yardoc
