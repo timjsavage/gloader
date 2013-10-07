@@ -4,7 +4,7 @@ require 'thor'
 
 module GLoader
 
-  class Build < Thor
+  class Default < Thor
 
     class_option :aws_id, type: :string, desc: 'AWS ID'
     class_option :aws_key, type: :string, desc: 'AWS key'
@@ -14,6 +14,21 @@ module GLoader
     class_option :very_verbose, type: :boolean, aliases: :V, desc: 'VERY Verbose output'
     class_option :id, type: :string, desc: 'Platform ID to allow multi-tenancy in a single IaaS'
     class_option :non_interactive, aliases: :n, type: :boolean, desc: 'Non-interactive'
+
+    desc 'save_config', 'Save config'
+    option :to_default, type: :boolean, aliases: :d, desc: 'Save as defauilt config'
+    def save_config
+      type = options['to_default'] ? :default : :state
+      GLoader::Config.new.config(type, options, true)
+    end
+
+    desc 'config', 'Show current config'
+    def config
+      puts GLoader::Config.new.config.inspect
+    end
+  end
+
+  class Build < Default
 
     desc 'status', 'Get the status of the platform'
     def status
@@ -30,7 +45,13 @@ module GLoader
     option :console_size, type: :string, desc: 'IaaS insance size to use for the concole'
     def create
       confirmation = options[:non_interactive] || yes?('Are you sure?', :green)
-      GLoader::Platform.new(options).create if confirmation
+      if confirmation
+        config = GLoader::Config.new
+        config.config(:default, options)
+        GLoader::Platform.new(config).create
+      else
+        say('Aborted', :red)
+      end
     end
 
     desc 'destroy', 'Destroy a load test plaform'
@@ -44,15 +65,7 @@ module GLoader
     end
   end
 
-  class Test < Thor
-
-    class_option :aws_id, type: :string, desc: 'AWS ID'
-    class_option :aws_key, type: :string, desc: 'AWS key'
-    class_option :rackspace_id, type: :string, desc: 'Rackspace username'
-    class_option :rackspace_key, type: :string, desc: 'Rackspace API key'
-    class_option :verbose, type: :boolean, aliases: :v, desc: 'Verbose output'
-    class_option :very_verbose, type: :boolean, aliases: :V, desc: 'VERY Verbose output'
-    class_option :id, type: :string, desc: 'Platform ID to allow multi-tenancy in a single IaaS'
+  class Test < Default
 
     desc 'init', 'Initiate load test platform'
     def init

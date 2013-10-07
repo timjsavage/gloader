@@ -17,10 +17,12 @@ describe GLoader do
     end
 
     subject do
-      GLoader::Platform.new({ aws_id:      'foo',
-                              aws_key:  'bar',
-                              platform_id:            'default',
-                              region:                 'eu-west-1' })
+      config = GLoader::Config.new
+      config.config(:default, { aws_id:       'foo',
+                                aws_key:      'bar',
+                                platform_id:  'default',
+                                region:       'eu-west-1' })
+      GLoader::Platform.new(config)
     end
 
     describe '#status' do

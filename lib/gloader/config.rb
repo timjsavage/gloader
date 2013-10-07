@@ -1,6 +1,7 @@
 # Encoding: utf-8
 
 require 'psych'
+require 'active_support/core_ext/hash'
 
 module GLoader
   class Config
@@ -10,17 +11,28 @@ module GLoader
       parse_config(:state)
     end
 
-    def config(type, config = {}, update = false)
-      @config ||= {}
-      @config[type] ||= {}
-      @config[type].merge!(config)
-      update_config(type, config) if update
-      @config[type]
+    def config(type = nil, config = {}, update = false)
+      @config ||= { default: {}, state: {} }
+      @config[type].deep_merge!(deep_symbolize_keys(config)) unless type.nil?
+      update_config(type, @config[type]) if update
+      deep_symbolize_keys(@config)
+    end
+
+    def combined
+      @config[:default].deep_merge(@config[:state])
+    end
+
+    def deep_symbolize_keys(hash)
+      hash.reduce({}) do |result, (key, value)|
+        value = deep_symbolize_keys(value) if value.is_a? Hash
+        result[(key.to_sym rescue key) || key] = value
+        result
+      end
     end
 
     def parse_config(type)
       config(type, Psych.load_file(config_path(type)), false) if File.exists?(config_path(type))
-      config(type)
+      config
     end
 
     def update_config(type, config)

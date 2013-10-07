@@ -5,6 +5,8 @@ require 'sshkey'
 require 'slowweb'
 require 'active_support'
 
+require_relative '../config'
+
 module GLoader
   module Iaas
     class Aws
@@ -17,23 +19,24 @@ module GLoader
         instance_size_agent:    'm1.medium',
         instance_size_console:  'm1.medium',
         region:                 'eu-west-1',
-        availability_zone:      '',
         distribution:           'single',
         security_group:         'gloader'
       }
 
-      def initialize(config = {})
+      def initialize(config)
+        raise ArgumentError unless config.instance_of? GLoader::Config
         config(config)
         rate_limit
-        unless config[:init] == false
+        unless self.config[:init] == false
           create_security_groups
           create_local_keys
         end
       end
 
-      def config(config = {})
-        @config ||= DEFAULTS
-        @config.merge!(config).symbolize_keys!
+      def config(config = nil)
+        @config = config unless config.nil?
+        @config.config(:default, DEFAULTS)
+        @config.combined
       end
 
       def rate_limit
@@ -173,7 +176,7 @@ module GLoader
       def key_path(type)
         path = File.expand_path ".#{LOAD_TEST_PLATFORM_GROUP_TAG}-#{type.to_s}.key"
         path.sub!('.key', '-test.key') if ENV['GEM_ENV'] == 'test'
-        path.sub('-', '_')
+        path.gsub('-', '_')
       end
 
       def destroy_keys

@@ -10,9 +10,12 @@ describe GLoader do
         include GLoader::Iaas
       end
       gloader = Test.new
-      gloader.provider({ aws_id:      'foo',
-                         aws_key:  'bar',
-                         platform_id:            'default' })
+      aws_config = GLoader::Config.new
+      aws_config.config(:default, { aws_id:       'foo',
+                                    aws_key:      'bar',
+                                    platform_id:  'default' })
+
+      gloader.provider(aws_config)
       gloader
     end
 

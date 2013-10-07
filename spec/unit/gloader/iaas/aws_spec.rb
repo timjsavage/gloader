@@ -17,10 +17,12 @@ describe GLoader do
       end
 
       let(:gloader) do
-        GLoader::Iaas::Aws.new({ aws_id:      'foo',
-                                 aws_key:  'bar',
-                                 platform_id:            'default',
-                                 init:                   false })
+        aws_config = GLoader::Config.new
+        aws_config.config(:default, { aws_id:       'foo',
+                                      aws_key:      'bar',
+                                      platform_id:  'default',
+                                      init:         false })
+        GLoader::Iaas::Aws.new(aws_config)
       end
 
       def create_console(region = 'eu-west-1')
@@ -241,6 +243,17 @@ describe GLoader do
         end
       end
 
+      describe '#key_path' do
+        it 'will return the path of a public key' do
+          require_path = File.expand_path '.gloader_platform_public_test.key'
+          gloader.key_path(:public).must_equal require_path
+        end
+        it 'will return the path of a private key' do
+          require_path = File.expand_path '.gloader_platform_private_test.key'
+          gloader.key_path(:private).must_equal require_path
+        end
+      end
+
       describe '#iaas_key_exists?' do
         it 'will return false if a key doesn\'t exist' do
           region = 'eu-west-1'
@@ -309,9 +322,11 @@ describe GLoader do
       describe '#create_instance' do
 
         let(:gloader) do
-          GLoader::Iaas::Aws.new({ aws_id:      'foo',
-                                   aws_key:  'bar',
-                                   platform_id:            'default' })
+          aws_config = GLoader::Config.new
+          aws_config.config(:default, { aws_id:       'foo',
+                                        aws_key:      'bar',
+                                        platform_id:  'default' })
+          GLoader::Iaas::Aws.new(aws_config)
         end
 
         it 'will create an agent instance' do

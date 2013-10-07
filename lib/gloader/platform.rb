@@ -3,6 +3,7 @@
 require_relative 'console'
 require_relative 'iaas'
 require_relative 'chef'
+require_relative 'config'
 
 module GLoader
   class Platform
@@ -11,7 +12,8 @@ module GLoader
     include GLoader::Chef
     include GLoader::Core
 
-    def initialize(config = {})
+    def initialize(config)
+      raise ArgumentError unless config.instance_of? GLoader::Config
       provider(config)
     end
 
