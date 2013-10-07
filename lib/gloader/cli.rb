@@ -1,10 +1,19 @@
 # Encoding: utf-8
 
 require 'thor'
+require 'active_support'
 
 module GLoader
 
   class Default < Thor
+
+    no_commands do
+      def config
+        config = GLoader::Config.new
+        config.config(:state, options.except(:to_default))
+        config
+      end
+    end
 
     class_option :aws_id, type: :string, desc: 'AWS ID'
     class_option :aws_key, type: :string, desc: 'AWS key'
@@ -19,12 +28,13 @@ module GLoader
     option :to_default, type: :boolean, aliases: :d, desc: 'Save as defauilt config'
     def save_config
       type = options['to_default'] ? :default : :state
-      GLoader::Config.new.config(type, options, true)
+      config.config(type, options.except(:to_default), true)
+      show_config
     end
 
-    desc 'config', 'Show current config'
-    def config
-      puts GLoader::Config.new.config.inspect
+    desc 'show_config', 'Show current config'
+    def show_config
+      puts config.combined.inspect
     end
   end
 
@@ -32,7 +42,7 @@ module GLoader
 
     desc 'status', 'Get the status of the platform'
     def status
-      GLoader::Platform.new(options).status
+      GLoader::Platform.new(config).status
     end
 
     desc 'create', 'Create a load test plaform'
@@ -46,8 +56,6 @@ module GLoader
     def create
       confirmation = options[:non_interactive] || yes?('Are you sure?', :green)
       if confirmation
-        config = GLoader::Config.new
-        config.config(:default, options)
         GLoader::Platform.new(config).create
       else
         say('Aborted', :red)
@@ -57,7 +65,7 @@ module GLoader
     desc 'destroy', 'Destroy a load test plaform'
     def destroy
       confirmation = options[:non_interactive] || yes?('Are you sure?', :green)
-      GLoader::Platform.new(options).destroy if confirmation
+      GLoader::Platform.new(config).destroy if confirmation
     end
 
     desc 'failing', 'Report on which agents are failing'
