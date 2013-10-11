@@ -23,9 +23,13 @@ require File.expand_path(File.join(File.dirname(__FILE__), 'lib', 'gloader', 've
 require 'rake/testtask'
 namespace :gloader do
   namespace :specs do
+
+    desc 'Run unit tests'
     Rake::TestTask.new('unit') do |t|
       t.pattern = 'spec/unit/gloader/**/*_spec.rb'
     end
+
+    desc 'Run integration tests'
     Rake::TestTask.new('integration') do |t|
       t.pattern = 'spec/integration/gloader/**/*_spec.rb'
     end
