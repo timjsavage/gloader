@@ -30,10 +30,10 @@ describe GLoader do
           image_id:           'ami-ca1a14be',
           flavor_id:          'm1.medium',
           tags: {
-            LOAD_TEST_PLATFORM_TAG_NAME     => LOAD_TEST_PLATFORM_CONSOLE_TAG,
-            LOAD_TEST_PLATFORM_TAG_NAME_ID  => 'default',
-            LOAD_TEST_PLATFORM_GROUP_TAG    => 'true',
-            'Name'                          => "#{LOAD_TEST_PLATFORM_CONSOLE_TAG} (default)",
+            GLOADER_PLATFORM_AWS_TAG_NAME     => GLOADER_PLATFORM_AWS_CONSOLE_TAG,
+            GLOADER_PLATFORM_AWS_TAG_NAME_ID  => 'default',
+            GLOADER_PLATFORM_AWS_GROUP_TAG    => 'true',
+            'Name'                          => "#{GLOADER_PLATFORM_AWS_CONSOLE_TAG} (default)",
           }
         })
       end
@@ -43,10 +43,10 @@ describe GLoader do
           image_id:           'ami-ca1a14be',
           flavor_id:          'm1.medium',
           tags: {
-            LOAD_TEST_PLATFORM_TAG_NAME     => LOAD_TEST_PLATFORM_AGENT_TAG,
-            LOAD_TEST_PLATFORM_TAG_NAME_ID  => 'default',
-            LOAD_TEST_PLATFORM_GROUP_TAG    => 'true',
-            'Name'                          => "#{LOAD_TEST_PLATFORM_AGENT_TAG} (default)",
+            GLOADER_PLATFORM_AWS_TAG_NAME     => GLOADER_PLATFORM_AWS_AGENT_TAG,
+            GLOADER_PLATFORM_AWS_TAG_NAME_ID  => 'default',
+            GLOADER_PLATFORM_AWS_GROUP_TAG    => 'true',
+            'Name'                          => "#{GLOADER_PLATFORM_AWS_AGENT_TAG} (default)",
             'AgentID'                       => 1
           }
         })
@@ -60,6 +60,16 @@ describe GLoader do
             'Name' => 'Other Instance'
           }
         })
+      end
+
+      describe '#constants' do
+        it 'should have tag constants set' do
+          GLOADER_PLATFORM_AWS_GROUP_TAG.must_equal 'gloader-platform'
+          GLOADER_PLATFORM_AWS_TAG_NAME.must_equal 'gloader-platform-type'
+          GLOADER_PLATFORM_AWS_CONSOLE_TAG.must_equal 'gloader-platform-console'
+          GLOADER_PLATFORM_AWS_AGENT_TAG.must_equal 'gloader-platform-agent'
+          GLOADER_PLATFORM_AWS_TAG_NAME_ID.must_equal 'gloader-platform-id'
+        end
       end
 
       describe '#config' do
@@ -150,16 +160,16 @@ describe GLoader do
           assert_raises(ArgumentError) { gloader.find_instances_by_tag }
         end
         it 'will return no instances if there aren\'t any' do
-          gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
-                                        LOAD_TEST_PLATFORM_AGENT_TAG).must_equal []
+          gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+                                        GLOADER_PLATFORM_AWS_AGENT_TAG).must_equal []
         end
         it 'will return agent instances based on tags' do
           create_console
           create_agent('eu-west-1')
           create_agent('us-east-1')
           create_other('us-east-1')
-          servers = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
-                                                  LOAD_TEST_PLATFORM_AGENT_TAG)
+          servers = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+                                                  GLOADER_PLATFORM_AWS_AGENT_TAG)
           servers.size.must_equal 2
           servers.first.must_be_instance_of Fog::Compute::AWS::Server
           servers.each do |server|
@@ -171,8 +181,8 @@ describe GLoader do
           create_agent('eu-west-1')
           create_agent('us-east-1')
           create_other('us-east-1')
-          servers = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
-                                                  LOAD_TEST_PLATFORM_CONSOLE_TAG)
+          servers = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+                                                  GLOADER_PLATFORM_AWS_CONSOLE_TAG)
           servers.size.must_equal 1
           servers.first.must_be_instance_of Fog::Compute::AWS::Server
           servers.each do |server|
@@ -226,14 +236,14 @@ describe GLoader do
 
       describe '#instance_tags' do
         it 'will return instance tags for a agent instance' do
-          gloader.instance_tags(:agent)[LOAD_TEST_PLATFORM_TAG_NAME].must_equal \
-            LOAD_TEST_PLATFORM_AGENT_TAG
-          gloader.instance_tags(:agent)[LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
+          gloader.instance_tags(:agent)[GLOADER_PLATFORM_AWS_TAG_NAME].must_equal \
+            GLOADER_PLATFORM_AWS_AGENT_TAG
+          gloader.instance_tags(:agent)[GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
         end
         it 'will return instance tags for a console instance' do
-          gloader.instance_tags(:console)[LOAD_TEST_PLATFORM_TAG_NAME].must_equal \
-            LOAD_TEST_PLATFORM_CONSOLE_TAG
-          gloader.instance_tags(:console)[LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
+          gloader.instance_tags(:console)[GLOADER_PLATFORM_AWS_TAG_NAME].must_equal \
+            GLOADER_PLATFORM_AWS_CONSOLE_TAG
+          gloader.instance_tags(:console)[GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
         end
       end
 
@@ -290,16 +300,16 @@ describe GLoader do
           region = 'eu-west-1'
           type = :console
           attr = gloader.instance_attributes(type, region)
-          attr[:tags][LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
-          attr[:tags][LOAD_TEST_PLATFORM_TAG_NAME].must_equal LOAD_TEST_PLATFORM_CONSOLE_TAG
+          attr[:tags][GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
+          attr[:tags][GLOADER_PLATFORM_AWS_TAG_NAME].must_equal GLOADER_PLATFORM_AWS_CONSOLE_TAG
           attr[:image_id].must_equal gloader.regions[region][:image_id]
         end
         it 'will return attributes for an agent instance' do
           region = 'eu-west-1'
           type = :agent
           attr = gloader.instance_attributes(type, region)
-          attr[:tags][LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
-          attr[:tags][LOAD_TEST_PLATFORM_TAG_NAME].must_equal LOAD_TEST_PLATFORM_AGENT_TAG
+          attr[:tags][GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
+          attr[:tags][GLOADER_PLATFORM_AWS_TAG_NAME].must_equal GLOADER_PLATFORM_AWS_AGENT_TAG
           attr[:image_id].must_equal gloader.regions[region][:image_id]
         end
       end
@@ -308,14 +318,14 @@ describe GLoader do
         it 'will return tags for a console instance' do
           type = :console
           tags = gloader.instance_tags(type)
-          tags[LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
-          tags[LOAD_TEST_PLATFORM_TAG_NAME].must_equal LOAD_TEST_PLATFORM_CONSOLE_TAG
+          tags[GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
+          tags[GLOADER_PLATFORM_AWS_TAG_NAME].must_equal GLOADER_PLATFORM_AWS_CONSOLE_TAG
         end
         it 'will return tags for an agent instance' do
           type = :agent
           tags = gloader.instance_tags(type)
-          tags[LOAD_TEST_PLATFORM_GROUP_TAG].must_equal 'true'
-          tags[LOAD_TEST_PLATFORM_TAG_NAME].must_equal LOAD_TEST_PLATFORM_AGENT_TAG
+          tags[GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
+          tags[GLOADER_PLATFORM_AWS_TAG_NAME].must_equal GLOADER_PLATFORM_AWS_AGENT_TAG
         end
       end
 
@@ -331,15 +341,15 @@ describe GLoader do
 
         it 'will create an agent instance' do
           gloader.create_instance(:agent, 'eu-west-1').must_be_instance_of Fog::Compute::AWS::Server
-          servers = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
-                                                  LOAD_TEST_PLATFORM_AGENT_TAG)
+          servers = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+                                                  GLOADER_PLATFORM_AWS_AGENT_TAG)
           servers.first.key_name.must_equal 'fog_gloader_platform'
         end
         it 'will create a console instance' do
           server = gloader.create_instance(:console, 'eu-west-1')
           server.must_be_instance_of Fog::Compute::AWS::Server
-          servers = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
-                                                  LOAD_TEST_PLATFORM_CONSOLE_TAG)
+          servers = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+                                                  GLOADER_PLATFORM_AWS_CONSOLE_TAG)
           servers.size.must_equal 1
         end
         it 'will raise for an invalid instance type' do
@@ -359,30 +369,30 @@ describe GLoader do
           create_agent('eu-west-1')
           create_agent('us-east-1')
           create_other('us-east-1')
-          console = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
-                                                  LOAD_TEST_PLATFORM_CONSOLE_TAG)
-          agents = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
-                                                 LOAD_TEST_PLATFORM_AGENT_TAG)
+          console = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+                                                  GLOADER_PLATFORM_AWS_CONSOLE_TAG)
+          agents = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+                                                 GLOADER_PLATFORM_AWS_AGENT_TAG)
           console.count.must_equal 1
           agents.count.must_equal 2
         end
         it 'will destroy console instances' do
           create_platform_instances
           gloader.destroy_instances(:console)
-          console = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
-                                                  LOAD_TEST_PLATFORM_CONSOLE_TAG)
-          agents = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
-                                                 LOAD_TEST_PLATFORM_AGENT_TAG)
+          console = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+                                                  GLOADER_PLATFORM_AWS_CONSOLE_TAG)
+          agents = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+                                                 GLOADER_PLATFORM_AWS_AGENT_TAG)
           agents.count.must_equal 2
           console.count.must_equal 0
         end
         it 'will destroy agent instances' do
           create_platform_instances
           gloader.destroy_instances(:agent)
-          console = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
-                                                  LOAD_TEST_PLATFORM_CONSOLE_TAG)
-          agents = gloader.find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME,
-                                                 LOAD_TEST_PLATFORM_AGENT_TAG)
+          console = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+                                                  GLOADER_PLATFORM_AWS_CONSOLE_TAG)
+          agents = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+                                                 GLOADER_PLATFORM_AWS_AGENT_TAG)
           agents.count.must_equal 0
           console.count.must_equal 1
         end

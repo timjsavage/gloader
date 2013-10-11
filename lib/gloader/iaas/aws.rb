@@ -7,6 +7,12 @@ require 'active_support'
 
 require_relative '../config'
 
+GLOADER_PLATFORM_AWS_GROUP_TAG   = 'gloader-platform'
+GLOADER_PLATFORM_AWS_TAG_NAME    = 'gloader-platform-type'
+GLOADER_PLATFORM_AWS_CONSOLE_TAG = 'gloader-platform-console'
+GLOADER_PLATFORM_AWS_AGENT_TAG   = 'gloader-platform-agent'
+GLOADER_PLATFORM_AWS_TAG_NAME_ID = 'gloader-platform-id'
+
 module GLoader
   module Iaas
     class Aws
@@ -108,16 +114,16 @@ module GLoader
       end
 
       def instance_matches_platform?(server_tag, server_value)
-        server_tag == LOAD_TEST_PLATFORM_TAG_NAME_ID &&
+        server_tag == GLOADER_PLATFORM_AWS_TAG_NAME_ID &&
         server_value == config[:platform_id]
       end
 
       def get_console_instance
-        find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME, LOAD_TEST_PLATFORM_CONSOLE_TAG)
+        find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME, GLOADER_PLATFORM_AWS_CONSOLE_TAG)
       end
 
       def get_agent_instances
-        find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME, LOAD_TEST_PLATFORM_AGENT_TAG)
+        find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME, GLOADER_PLATFORM_AWS_AGENT_TAG)
       end
 
       def instance_image(region)
@@ -170,11 +176,11 @@ module GLoader
       end
 
       def key_name(prefix = false)
-        (prefix ? 'fog_' : '') + LOAD_TEST_PLATFORM_GROUP_TAG.sub('-', '_')
+        (prefix ? 'fog_' : '') + GLOADER_PLATFORM_AWS_GROUP_TAG.sub('-', '_')
       end
 
       def key_path(type)
-        path = File.expand_path ".#{LOAD_TEST_PLATFORM_GROUP_TAG}-#{type.to_s}.key"
+        path = File.expand_path ".#{GLOADER_PLATFORM_AWS_GROUP_TAG}-#{type.to_s}.key"
         path.sub!('.key', '-test.key') if ENV['GEM_ENV'] == 'test'
         path.gsub('-', '_')
       end
@@ -228,17 +234,17 @@ module GLoader
       def instance_tags(type)
         if type == :agent
           {
-            LOAD_TEST_PLATFORM_TAG_NAME     => LOAD_TEST_PLATFORM_AGENT_TAG,
-            LOAD_TEST_PLATFORM_TAG_NAME_ID  => platform_id,
-            LOAD_TEST_PLATFORM_GROUP_TAG    => 'true',
-            'Name'                          => "#{LOAD_TEST_PLATFORM_AGENT_TAG} (#{platform_id})",
+            'Name' => "#{GLOADER_PLATFORM_AWS_AGENT_TAG} (#{platform_id})",
+            GLOADER_PLATFORM_AWS_TAG_NAME     => GLOADER_PLATFORM_AWS_AGENT_TAG,
+            GLOADER_PLATFORM_AWS_TAG_NAME_ID  => platform_id,
+            GLOADER_PLATFORM_AWS_GROUP_TAG    => 'true',
           }
         elsif type == :console
           {
-            LOAD_TEST_PLATFORM_TAG_NAME     => LOAD_TEST_PLATFORM_CONSOLE_TAG,
-            LOAD_TEST_PLATFORM_TAG_NAME_ID  => platform_id,
-            LOAD_TEST_PLATFORM_GROUP_TAG    => 'true',
-            'Name'                          => "#{LOAD_TEST_PLATFORM_CONSOLE_TAG} (#{platform_id})",
+            'Name' => "#{GLOADER_PLATFORM_AWS_CONSOLE_TAG} (#{platform_id})",
+            GLOADER_PLATFORM_AWS_TAG_NAME     => GLOADER_PLATFORM_AWS_CONSOLE_TAG,
+            GLOADER_PLATFORM_AWS_TAG_NAME_ID  => platform_id,
+            GLOADER_PLATFORM_AWS_GROUP_TAG    => 'true',
           }
         end
       end
@@ -273,9 +279,9 @@ module GLoader
         logger.info "Destroying instances: #{type.to_s}"
         raise ArgumentError unless type == :agent || type == :console
 
-        tag = type == :console ? LOAD_TEST_PLATFORM_CONSOLE_TAG : LOAD_TEST_PLATFORM_AGENT_TAG
+        tag = type == :console ? GLOADER_PLATFORM_AWS_CONSOLE_TAG : GLOADER_PLATFORM_AWS_AGENT_TAG
 
-        servers = find_instances_by_tag(LOAD_TEST_PLATFORM_TAG_NAME, tag)
+        servers = find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME, tag)
         servers.each do |server|
           server.destroy
         end
