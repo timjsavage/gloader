@@ -5,7 +5,7 @@ require 'active_support'
 
 module GLoader
 
-  class Default < Thor
+  class Base < Thor
 
     no_commands do
       def config
@@ -38,7 +38,7 @@ module GLoader
     end
   end
 
-  class Build < Default
+  class Build < Base
 
     desc 'status', 'Get the status of the platform'
     def status
@@ -73,7 +73,7 @@ module GLoader
     end
   end
 
-  class Test < Default
+  class Test < Base
 
     desc 'init', 'Initiate load test platform'
     def init
