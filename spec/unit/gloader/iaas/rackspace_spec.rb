@@ -13,10 +13,10 @@ describe GLoader do
 
       after(:each) do
         Fog::Mock.reset
-        gloader.destroy
+        subject.destroy
       end
 
-      let(:gloader) do
+      subject do
         GLoader::Iaas::Rackspace.new({ rackspace_id:  'foo2',
                                        rackspace_key: 'bar2',
                                        platform_id:   'default',
@@ -25,39 +25,39 @@ describe GLoader do
 
       describe '#config' do
         it 'should return default config' do
-          gloader.config[:instance_size_agent].must_equal '4'
-          gloader.config[:instance_size_console].must_equal '4'
-          gloader.config[:rackspace_id].must_equal 'foo2'
+          subject.config[:instance_size_agent].must_equal '4'
+          subject.config[:instance_size_console].must_equal '4'
+          subject.config[:rackspace_id].must_equal 'foo2'
         end
       end
 
       describe '#rate_limit' do
         it 'should add a rate limiter for the iaas api' do
-          gloader.rate_limit
+          subject.rate_limit
           SlowWeb.get_limit('rackspacecloud.com').host.must_equal 'rackspacecloud.com'
         end
         it 'should not add another rate limiter if one has already been set' do
-          gloader.rate_limit
-          gloader.rate_limit
+          subject.rate_limit
+          subject.rate_limit
           SlowWeb.get_limit('rackspacecloud.com').host.must_equal 'rackspacecloud.com'
         end
       end
 
       describe '#connection' do
         it 'should return a connection for a region' do
-          gloader.connection(:lon).must_be_instance_of Fog::Compute::RackspaceV2::Mock
-          gloader.connection(:ord).must_be_instance_of Fog::Compute::RackspaceV2::Mock
-          gloader.connection(:ord).must_be_instance_of Fog::Compute::RackspaceV2::Mock
+          subject.connection(:lon).must_be_instance_of Fog::Compute::RackspaceV2::Mock
+          subject.connection(:ord).must_be_instance_of Fog::Compute::RackspaceV2::Mock
+          subject.connection(:ord).must_be_instance_of Fog::Compute::RackspaceV2::Mock
         end
         it 'will raise if region is empty' do
-          assert_raises(ArgumentError) { gloader.connection }
+          assert_raises(ArgumentError) { subject.connection }
         end
       end
 
       describe '#connection_storage' do
         it 'should return a storage connection' do
-          gloader.connection_storage.must_be_instance_of Fog::Storage::Rackspace::Mock
-          directories = gloader.connection_storage.directories
+          subject.connection_storage.must_be_instance_of Fog::Storage::Rackspace::Mock
+          directories = subject.connection_storage.directories
           directories.must_be_instance_of Fog::Storage::Rackspace::Directories
           directories.must_equal []
         end

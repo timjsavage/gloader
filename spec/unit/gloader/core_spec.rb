@@ -6,7 +6,7 @@ describe GLoader do
 
   describe GLoader::Core do
 
-    let(:gloader) do
+    subject do
       class Test
         include GLoader::Core
       end.new
@@ -15,7 +15,7 @@ describe GLoader do
     describe '#output' do
       it 'should output' do
         out, _err = capture_io do
-          gloader.output do
+          subject.output do
             Formatador.display_line('Hello')
           end
         end

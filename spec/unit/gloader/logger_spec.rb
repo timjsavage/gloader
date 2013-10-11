@@ -6,7 +6,9 @@ describe GLoader do
 
   describe GLoader::Logger do
 
-    let(:gloader) { GLoader::Iaas.new }
+    subject do
+      GLoader::Iaas.new
+    end
 
   end
 end

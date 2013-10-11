@@ -13,10 +13,10 @@ describe GLoader do
 
       after(:each) do
         Fog::Mock.reset
-        gloader.destroy
+        subject.destroy
       end
 
-      let(:gloader) do
+      subject do
         aws_config = GLoader::Config.new
         aws_config.config(:default, { aws_id:       'foo',
                                       aws_key:      'bar',
@@ -26,7 +26,7 @@ describe GLoader do
       end
 
       def create_console(region = 'eu-west-1')
-        gloader.connection(region).servers.create({
+        subject.connection(region).servers.create({
           image_id:           'ami-ca1a14be',
           flavor_id:          'm1.medium',
           tags: {
@@ -39,7 +39,7 @@ describe GLoader do
       end
 
       def create_agent(region)
-        gloader.connection(region).servers.create({
+        subject.connection(region).servers.create({
           image_id:           'ami-ca1a14be',
           flavor_id:          'm1.medium',
           tags: {
@@ -53,7 +53,7 @@ describe GLoader do
       end
 
       def create_other(region)
-        gloader.connection(region).servers.create({
+        subject.connection(region).servers.create({
           image_id:           'ami-ca1a14be',
           flavor_id:          'm1.medium',
           tags: {
@@ -74,46 +74,46 @@ describe GLoader do
 
       describe '#config' do
         it 'should return default config' do
-          gloader.config[:instance_size_agent].must_equal 'm1.medium'
-          gloader.config[:instance_size_console].must_equal 'm1.medium'
-          gloader.config[:aws_id].must_equal 'foo'
+          subject.config[:instance_size_agent].must_equal 'm1.medium'
+          subject.config[:instance_size_console].must_equal 'm1.medium'
+          subject.config[:aws_id].must_equal 'foo'
         end
       end
 
       describe '#rate_limit' do
         it 'should add a rate limiter for the iaas api' do
-          gloader.rate_limit
+          subject.rate_limit
           SlowWeb.get_limit('amazonaws.com').host.must_equal 'amazonaws.com'
         end
         it 'should not add another rate limiter if one has already been set' do
-          gloader.rate_limit
-          gloader.rate_limit
+          subject.rate_limit
+          subject.rate_limit
           SlowWeb.get_limit('amazonaws.com').host.must_equal 'amazonaws.com'
         end
       end
 
       describe '#destroy' do
         it 'should destroy all keys and security groups even if none exist' do
-          gloader.destroy
+          subject.destroy
         end
         it 'should destroy all keys and security groups' do
-          gloader.create_local_keys
-          gloader.create_security_groups
-          gloader.connection('eu-west-1').key_pairs.create({ name: 'fog_gloader_platform' })
+          subject.create_local_keys
+          subject.create_security_groups
+          subject.connection('eu-west-1').key_pairs.create({ name: 'fog_gloader_platform' })
 
-          gloader.connection('eu-west-1').key_pairs.select do |g|
+          subject.connection('eu-west-1').key_pairs.select do |g|
             g.name == 'fog_gloader_platform'
           end.count.must_equal 1
-          gloader.connection('eu-west-1').security_groups.select do |g|
+          subject.connection('eu-west-1').security_groups.select do |g|
             g.name == 'gloader'
           end.count.must_equal 1
 
-          gloader.destroy
+          subject.destroy
 
-          gloader.connection('eu-west-1').key_pairs.select do |g|
+          subject.connection('eu-west-1').key_pairs.select do |g|
             g.name == 'fog_gloader_platform'
           end.count.must_equal 0
-          gloader.connection('eu-west-1').security_groups.select do |g|
+          subject.connection('eu-west-1').security_groups.select do |g|
             g.name == 'gloader'
           end.count.must_equal 0
         end
@@ -121,9 +121,9 @@ describe GLoader do
 
       describe '#regions' do
         it 'should return a hash of Iaas regions' do
-          gloader.regions.length.must_equal 8
-          gloader.regions['eu-west-1'][:image_id].must_equal 'ami-ca1a14be'
-          gloader.regions.each_pair do |region, config|
+          subject.regions.length.must_equal 8
+          subject.regions['eu-west-1'][:image_id].must_equal 'ami-ca1a14be'
+          subject.regions.each_pair do |region, config|
             config[:image_id].must_match /^ami-[a-z0-9]+$/
             config[:weight].must_be_instance_of Fixnum
           end
@@ -132,12 +132,12 @@ describe GLoader do
 
       describe '#connection' do
         it 'should return a connection for a region' do
-          gloader.connection('eu-west-1').must_be_instance_of Fog::Compute::AWS::Mock
-          gloader.connection('eu-west-1').region.must_equal 'eu-west-1'
-          gloader.connection('us-east-1').region.must_equal 'us-east-1'
+          subject.connection('eu-west-1').must_be_instance_of Fog::Compute::AWS::Mock
+          subject.connection('eu-west-1').region.must_equal 'eu-west-1'
+          subject.connection('us-east-1').region.must_equal 'us-east-1'
         end
         it 'will raise if region is empty' do
-          assert_raises(ArgumentError) { gloader.connection }
+          assert_raises(ArgumentError) { subject.connection }
         end
       end
 
@@ -149,18 +149,18 @@ describe GLoader do
           Fog::Mock.reset
         end
         it 'should return a S3 connection for a region' do
-          gloader.connection_storage.must_be_instance_of Fog::Storage::AWS::Mock
-          gloader.connection_storage.directories.must_be_instance_of Fog::Storage::AWS::Directories
-          gloader.connection_storage.directories.must_equal []
+          subject.connection_storage.must_be_instance_of Fog::Storage::AWS::Mock
+          subject.connection_storage.directories.must_be_instance_of Fog::Storage::AWS::Directories
+          subject.connection_storage.directories.must_equal []
         end
       end
 
       describe '#find_instances_by_tag' do
         it 'will raise if region is not passed' do
-          assert_raises(ArgumentError) { gloader.find_instances_by_tag }
+          assert_raises(ArgumentError) { subject.find_instances_by_tag }
         end
         it 'will return no instances if there aren\'t any' do
-          gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+          subject.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
                                         GLOADER_PLATFORM_AWS_AGENT_TAG).must_equal []
         end
         it 'will return agent instances based on tags' do
@@ -168,7 +168,7 @@ describe GLoader do
           create_agent('eu-west-1')
           create_agent('us-east-1')
           create_other('us-east-1')
-          servers = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+          servers = subject.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
                                                   GLOADER_PLATFORM_AWS_AGENT_TAG)
           servers.size.must_equal 2
           servers.first.must_be_instance_of Fog::Compute::AWS::Server
@@ -181,7 +181,7 @@ describe GLoader do
           create_agent('eu-west-1')
           create_agent('us-east-1')
           create_other('us-east-1')
-          servers = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+          servers = subject.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
                                                   GLOADER_PLATFORM_AWS_CONSOLE_TAG)
           servers.size.must_equal 1
           servers.first.must_be_instance_of Fog::Compute::AWS::Server
@@ -193,27 +193,27 @@ describe GLoader do
 
       describe '#instance_image' do
         it 'will return an image id for a region' do
-          gloader.instance_image('eu-west-1').must_equal 'ami-ca1a14be'
+          subject.instance_image('eu-west-1').must_equal 'ami-ca1a14be'
         end
         it 'will raise for an invalid region' do
-          assert_raises(ArgumentError) { gloader.instance_image('foo') }
+          assert_raises(ArgumentError) { subject.instance_image('foo') }
         end
       end
 
       describe '#instance_size' do
         it 'will return an image size for an instance type' do
-          gloader.instance_size(:agent).must_equal 'm1.medium'
-          gloader.instance_size(:console).must_equal 'm1.medium'
+          subject.instance_size(:agent).must_equal 'm1.medium'
+          subject.instance_size(:console).must_equal 'm1.medium'
         end
         it 'will raise for an invalid instance type' do
-          assert_raises(ArgumentError) { gloader.instance_size('foo') }
+          assert_raises(ArgumentError) { subject.instance_size('foo') }
         end
       end
 
       describe '#create_security_group' do
         it 'should create a security group' do
-          gloader.create_security_group('eu-west-1')
-          group = gloader.connection('eu-west-1').security_groups.select do |g|
+          subject.create_security_group('eu-west-1')
+          group = subject.connection('eu-west-1').security_groups.select do |g|
             g.name == 'gloader'
           end.first
           group.must_be_instance_of Fog::Compute::AWS::SecurityGroup
@@ -226,72 +226,72 @@ describe GLoader do
 
       describe '#destroy_security_group' do
         it 'should delete a security group even if it doesn\'t exist' do
-          gloader.destroy_security_group('eu-west-1').must_equal nil
+          subject.destroy_security_group('eu-west-1').must_equal nil
         end
         it 'should delete a existing security group' do
-          gloader.create_security_group('eu-west-1')
-          gloader.destroy_security_group('eu-west-1').status.must_equal 200
+          subject.create_security_group('eu-west-1')
+          subject.destroy_security_group('eu-west-1').status.must_equal 200
         end
       end
 
       describe '#instance_tags' do
         it 'will return instance tags for a agent instance' do
-          gloader.instance_tags(:agent)[GLOADER_PLATFORM_AWS_TAG_NAME].must_equal \
+          subject.instance_tags(:agent)[GLOADER_PLATFORM_AWS_TAG_NAME].must_equal \
             GLOADER_PLATFORM_AWS_AGENT_TAG
-          gloader.instance_tags(:agent)[GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
+          subject.instance_tags(:agent)[GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
         end
         it 'will return instance tags for a console instance' do
-          gloader.instance_tags(:console)[GLOADER_PLATFORM_AWS_TAG_NAME].must_equal \
+          subject.instance_tags(:console)[GLOADER_PLATFORM_AWS_TAG_NAME].must_equal \
             GLOADER_PLATFORM_AWS_CONSOLE_TAG
-          gloader.instance_tags(:console)[GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
+          subject.instance_tags(:console)[GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
         end
       end
 
       describe '#platform_id' do
         it 'will return a platform id' do
-          gloader.platform_id.must_equal 'default'
+          subject.platform_id.must_equal 'default'
         end
       end
 
       describe '#key_path' do
         it 'will return the path of a public key' do
           require_path = File.expand_path '.gloader_platform_public_test.key'
-          gloader.key_path(:public).must_equal require_path
+          subject.key_path(:public).must_equal require_path
         end
         it 'will return the path of a private key' do
           require_path = File.expand_path '.gloader_platform_private_test.key'
-          gloader.key_path(:private).must_equal require_path
+          subject.key_path(:private).must_equal require_path
         end
       end
 
       describe '#iaas_key_exists?' do
         it 'will return false if a key doesn\'t exist' do
           region = 'eu-west-1'
-          gloader.iaas_key_exists?(region).must_equal false
+          subject.iaas_key_exists?(region).must_equal false
         end
         it 'will return true if a key already exists' do
           region = 'eu-west-1'
-          gloader.connection(region).key_pairs.create({ name: gloader.key_name(true) })
-          gloader.iaas_key_exists?(region).must_equal true
+          subject.connection(region).key_pairs.create({ name: subject.key_name(true) })
+          subject.iaas_key_exists?(region).must_equal true
         end
       end
 
       describe '#local_keys_exists?' do
         it 'will return false if a private key doesn\'t exist' do
-          gloader.local_keys_exists?.must_equal false
+          subject.local_keys_exists?.must_equal false
         end
         it 'will return true if a key already exists' do
-          gloader.create_local_keys
-          gloader.local_keys_exists?.must_equal true
+          subject.create_local_keys
+          subject.local_keys_exists?.must_equal true
         end
       end
 
       describe '#key_name' do
         it 'will return a key pair name withoug a prefix by default' do
-          gloader.key_name.must_equal 'gloader_platform'
+          subject.key_name.must_equal 'gloader_platform'
         end
         it 'will return a key pair name with a prefix' do
-          gloader.key_name(true).must_equal 'fog_gloader_platform'
+          subject.key_name(true).must_equal 'fog_gloader_platform'
         end
       end
 
@@ -299,31 +299,31 @@ describe GLoader do
         it 'will return attributes for a console instance' do
           region = 'eu-west-1'
           type = :console
-          attr = gloader.instance_attributes(type, region)
+          attr = subject.instance_attributes(type, region)
           attr[:tags][GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
           attr[:tags][GLOADER_PLATFORM_AWS_TAG_NAME].must_equal GLOADER_PLATFORM_AWS_CONSOLE_TAG
-          attr[:image_id].must_equal gloader.regions[region][:image_id]
+          attr[:image_id].must_equal subject.regions[region][:image_id]
         end
         it 'will return attributes for an agent instance' do
           region = 'eu-west-1'
           type = :agent
-          attr = gloader.instance_attributes(type, region)
+          attr = subject.instance_attributes(type, region)
           attr[:tags][GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
           attr[:tags][GLOADER_PLATFORM_AWS_TAG_NAME].must_equal GLOADER_PLATFORM_AWS_AGENT_TAG
-          attr[:image_id].must_equal gloader.regions[region][:image_id]
+          attr[:image_id].must_equal subject.regions[region][:image_id]
         end
       end
 
       describe '#instance_tags' do
         it 'will return tags for a console instance' do
           type = :console
-          tags = gloader.instance_tags(type)
+          tags = subject.instance_tags(type)
           tags[GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
           tags[GLOADER_PLATFORM_AWS_TAG_NAME].must_equal GLOADER_PLATFORM_AWS_CONSOLE_TAG
         end
         it 'will return tags for an agent instance' do
           type = :agent
-          tags = gloader.instance_tags(type)
+          tags = subject.instance_tags(type)
           tags[GLOADER_PLATFORM_AWS_GROUP_TAG].must_equal 'true'
           tags[GLOADER_PLATFORM_AWS_TAG_NAME].must_equal GLOADER_PLATFORM_AWS_AGENT_TAG
         end
@@ -331,7 +331,7 @@ describe GLoader do
 
       describe '#create_instance' do
 
-        let(:gloader) do
+        subject do
           aws_config = GLoader::Config.new
           aws_config.config(:default, { aws_id:       'foo',
                                         aws_key:      'bar',
@@ -340,67 +340,67 @@ describe GLoader do
         end
 
         it 'will create an agent instance' do
-          gloader.create_instance(:agent, 'eu-west-1').must_be_instance_of Fog::Compute::AWS::Server
-          servers = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+          subject.create_instance(:agent, 'eu-west-1').must_be_instance_of Fog::Compute::AWS::Server
+          servers = subject.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
                                                   GLOADER_PLATFORM_AWS_AGENT_TAG)
           servers.first.key_name.must_equal 'fog_gloader_platform'
         end
         it 'will create a console instance' do
-          server = gloader.create_instance(:console, 'eu-west-1')
+          server = subject.create_instance(:console, 'eu-west-1')
           server.must_be_instance_of Fog::Compute::AWS::Server
-          servers = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+          servers = subject.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
                                                   GLOADER_PLATFORM_AWS_CONSOLE_TAG)
           servers.size.must_equal 1
         end
         it 'will raise for an invalid instance type' do
-          assert_raises(ArgumentError) { gloader.create_instance('foo', 'eu-west-1') }
+          assert_raises(ArgumentError) { subject.create_instance('foo', 'eu-west-1') }
         end
         it 'will raise for an invalid region' do
-          assert_raises(ArgumentError) { gloader.create_instance(:agent, 'foo') }
+          assert_raises(ArgumentError) { subject.create_instance(:agent, 'foo') }
         end
       end
 
       describe '#destroy_instances' do
         it 'will destroy instances even if not available' do
-          gloader.destroy_instances(:agent).must_equal []
+          subject.destroy_instances(:agent).must_equal []
         end
         def create_platform_instances
           create_console('eu-west-1')
           create_agent('eu-west-1')
           create_agent('us-east-1')
           create_other('us-east-1')
-          console = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+          console = subject.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
                                                   GLOADER_PLATFORM_AWS_CONSOLE_TAG)
-          agents = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+          agents = subject.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
                                                  GLOADER_PLATFORM_AWS_AGENT_TAG)
           console.count.must_equal 1
           agents.count.must_equal 2
         end
         it 'will destroy console instances' do
           create_platform_instances
-          gloader.destroy_instances(:console)
-          console = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+          subject.destroy_instances(:console)
+          console = subject.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
                                                   GLOADER_PLATFORM_AWS_CONSOLE_TAG)
-          agents = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+          agents = subject.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
                                                  GLOADER_PLATFORM_AWS_AGENT_TAG)
           agents.count.must_equal 2
           console.count.must_equal 0
         end
         it 'will destroy agent instances' do
           create_platform_instances
-          gloader.destroy_instances(:agent)
-          console = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+          subject.destroy_instances(:agent)
+          console = subject.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
                                                   GLOADER_PLATFORM_AWS_CONSOLE_TAG)
-          agents = gloader.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
+          agents = subject.find_instances_by_tag(GLOADER_PLATFORM_AWS_TAG_NAME,
                                                  GLOADER_PLATFORM_AWS_AGENT_TAG)
           agents.count.must_equal 0
           console.count.must_equal 1
         end
         it 'will raise for an invalid instance type' do
-          assert_raises(ArgumentError) { gloader.destroy_instances('foo', 'eu-west-1') }
+          assert_raises(ArgumentError) { subject.destroy_instances('foo', 'eu-west-1') }
         end
         it 'will raise for an invalid region' do
-          assert_raises(ArgumentError) { gloader.destroy_instances(:agent, 'foo') }
+          assert_raises(ArgumentError) { subject.destroy_instances(:agent, 'foo') }
         end
       end
     end
