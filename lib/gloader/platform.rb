@@ -43,7 +43,9 @@ module GLoader
     end
 
     def destroy
-      destroy_console && destroy_agents && destroy_dependencies
+      destroy_console
+      destroy_agents
+      destroy_dependencies
     end
 
     def destroy_console
@@ -55,7 +57,7 @@ module GLoader
     end
 
     def destroy_dependencies
-      provider.destroy
+      provider.destroy_dependencies
     end
 
     def deploy_scripts

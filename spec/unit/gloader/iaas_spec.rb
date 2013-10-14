@@ -25,7 +25,7 @@ describe GLoader do
 
     after(:each) do
       Fog::Mock.reset
-      subject.provider.destroy
+      subject.provider.destroy_dependencies
     end
 
     def create_other(region)

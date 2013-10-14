@@ -49,7 +49,7 @@ module GLoader
         SlowWeb.limit('amazonaws.com', 60, 60) if SlowWeb.get_limit('amazonaws.com').nil?
       end
 
-      def destroy
+      def destroy_dependencies
         destroy_keys
         destroy_security_groups
       end

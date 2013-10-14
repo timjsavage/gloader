@@ -13,7 +13,7 @@ describe GLoader do
 
     after(:each) do
       Fog::Mock.reset
-      subject.provider.destroy
+      subject.provider.destroy_dependencies
     end
 
     subject do

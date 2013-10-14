@@ -13,7 +13,7 @@ describe GLoader do
 
       after(:each) do
         Fog::Mock.reset
-        subject.destroy
+        subject.destroy_dependencies
       end
 
       subject do
@@ -94,7 +94,7 @@ describe GLoader do
 
       describe '#destroy' do
         it 'should destroy all keys and security groups even if none exist' do
-          subject.destroy
+          subject.destroy_dependencies
         end
         it 'should destroy all keys and security groups' do
           subject.create_local_keys
@@ -108,7 +108,7 @@ describe GLoader do
             g.name == 'gloader'
           end.count.must_equal 1
 
-          subject.destroy
+          subject.destroy_dependencies
 
           subject.connection('eu-west-1').key_pairs.select do |g|
             g.name == 'fog_gloader_platform'

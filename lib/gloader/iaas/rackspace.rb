@@ -80,7 +80,7 @@ module GLoader
         })
       end
 
-      def destroy
+      def destroy_dependencies
       end
     end
   end
