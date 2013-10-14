@@ -2,6 +2,7 @@
 
 require 'thor'
 require 'active_support'
+require 'formatador'
 
 module GLoader
 
@@ -29,12 +30,12 @@ module GLoader
     def save_config
       type = options['to_default'] ? :default : :state
       config.config(type, options.except(:to_default), true)
-      show_config
+      say config.to_s
     end
 
     desc 'show_config', 'Show current config'
     def show_config
-      puts config.combined.inspect
+      config.display
     end
   end
 
@@ -56,7 +57,7 @@ module GLoader
     def create
       confirmation = options[:non_interactive] || yes?('Are you sure?', :green)
       if confirmation
-        GLoader::Platform.new(config).create
+        say('Done', :green) if GLoader::Platform.new(config).create
       else
         say('Aborted', :red)
       end
@@ -126,7 +127,7 @@ module GLoader
     end
   end
 
-  class CLI < Thor
+  class CLI < Base
     include Thor::Actions
 
     def self.start(*)

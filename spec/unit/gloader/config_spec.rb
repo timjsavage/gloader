@@ -134,5 +134,33 @@ describe GLoader do
         File.delete subject.config_path(:default)
       end
     end
+
+    describe '#display' do
+      it 'should display the default config' do
+        subject.singleton_class.class_eval do
+          def config_path(type)
+            File.expand_path "spec/unit/fixtures/config_gloader_#{type.to_s}.yml"
+          end
+        end
+        subject.parse_config(:default)
+        out, _err = capture_io do
+          subject.display
+        end
+        out.must_match /platform_id | default/
+      end
+      it 'should display the current config' do
+        subject.singleton_class.class_eval do
+          def config_path(type)
+            File.expand_path "spec/unit/fixtures/config_gloader_#{type.to_s}.yml"
+          end
+        end
+        subject.parse_config(:default)
+        subject.parse_config(:state)
+        out, _err = capture_io do
+          subject.display
+        end
+        out.must_match /platform_id | megaload-us/
+      end
+    end
   end
 end

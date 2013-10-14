@@ -52,5 +52,13 @@ module GLoader
       path.sub!('.yml', '-test.yml') if ENV['GEM_ENV'] == 'test'
       path
     end
+
+    def display
+      table_data = []
+      combined.each do |key, value|
+        table_data << { key: key, value: value }
+      end
+      Formatador.display_compact_table(table_data)
+    end
   end
 end
