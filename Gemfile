@@ -14,15 +14,15 @@ gem 'formatador', '~> 0.2.4'
 gem "activesupport", "~> 3.2.14"
 
 group :development do
-  gem 'pry', '~> 0.9.12'
-  gem 'guard', '~> 2.1.0'
-  gem 'guard-rake', '~> 0.0.9'
-  gem 'guard-rubocop', '~> 1.0'
-  gem 'guard-bundler', '~> 0.1'
+  gem 'pry'
+  gem 'guard'
+  gem 'guard-rake'
+  gem 'guard-rubocop'
+  gem 'guard-bundler'
   gem 'growl', '~> 1.0.3'
   gem 'rb-inotify', '~> 0.9'
   gem 'rb-fsevent', '~> 0.9'
-  gem 'rdoc', '~> 4'
+  gem 'rdoc'
 end
 
 group :test do
