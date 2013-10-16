@@ -1,6 +1,0 @@
-maintainer       "Armakuni Ltd"
-maintainer_email "accounts@armakuni.com"
-license          "All rights reserved"
-description      "BOSH customisation"
-long_description      "BOSH customisation"
-version          "0.1.0"

@@ -1,5 +1,0 @@
-maintainer       "Armakuni Ltd"
-maintainer_email "all@armakuni.com"
-license          "All rights reserved"
-description      "Installs a limited collectd->graphite network proxy"
-version          "0.1.0"

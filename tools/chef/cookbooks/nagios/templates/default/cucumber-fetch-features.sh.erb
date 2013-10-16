@@ -1,9 +1,0 @@
-#!/bin/bash
-cd /tmp
-rm -rf <%= @checkout_path %>
-su -c "git clone --depth 1 --recursive <%= @repository %> <%= @checkout_path %>" <%= @nagios_user %>
-source /etc/profile.d/rbenv.sh
-eval "$(rbenv init -)"
-rbenv shell <%= @ruby_version %>
-BUNDLE_GEMFILE=<%= @checkout_path %>/Gemfile bundle install
-chown -R <%= @nagios_user %>:<%= @nagios_group %> <%= @checkout_path %>
