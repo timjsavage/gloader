@@ -35,4 +35,5 @@ group :test do
   gem 'flog',  '~> 4.1.2'
   gem 'roodi', '~> 3.1.1'
   gem 'reek', '~> 1.3.3'
+  gem 'foodcritic'
 end

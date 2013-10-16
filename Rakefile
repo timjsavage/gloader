@@ -78,7 +78,6 @@ Rake::RDocTask.new do |rdoc|
 end
 
 require 'rubocop/rake_task'
-
 desc 'Run RuboCop on the lib directory'
 Rubocop::RakeTask.new(:rubocop) do |task|
   task.fail_on_error = true
@@ -86,6 +85,12 @@ end
 
 require 'coveralls/rake/task'
 Coveralls::RakeTask.new
+
+require 'foodcritic'
+FoodCritic::Rake::LintTask.new do |t|
+  cookbooks = Dir.glob(File.join(File.dirname(__FILE__), 'tools/chef/cookbooks/*'))
+  t.options = { fail_tags: ['correctness'], cookbook_paths: cookbooks }
+end
 
 task default:  [:rubocop,
                 :quality,

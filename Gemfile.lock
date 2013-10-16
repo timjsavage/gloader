@@ -18,6 +18,7 @@ GEM
       thor
     crack (0.4.1)
       safe_yaml (~> 0.9.0)
+    erubis (2.7.0)
     excon (0.27.6)
     faraday (0.8.8)
       multipart-post (~> 1.2.0)
@@ -36,7 +37,16 @@ GEM
       nokogiri (~> 1.5)
       ruby-hmac
       unicode (~> 0.4.4)
+    foodcritic (3.0.3)
+      erubis
+      gherkin (~> 2.11.7)
+      nokogiri (~> 1.5.4)
+      rake
+      treetop (~> 1.4.10)
+      yajl-ruby (~> 1.1.0)
     formatador (0.2.4)
+    gherkin (2.11.8)
+      multi_json (~> 1.3)
     git (1.2.6)
     github_api (0.10.1)
       addressable
@@ -106,6 +116,7 @@ GEM
     parser (2.0.0)
       ast (~> 1.1)
       slop (~> 3.4, >= 3.4.5)
+    polyglot (0.3.3)
     powerpack (0.0.8)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
@@ -153,10 +164,14 @@ GEM
     thor (0.18.1)
     timers (1.1.0)
     tins (0.12.0)
+    treetop (1.4.15)
+      polyglot
+      polyglot (>= 0.3.1)
     unicode (0.4.4)
     webmock (1.15.0)
       addressable (>= 2.2.7)
       crack (>= 0.3.2)
+    yajl-ruby (1.1.0)
 
 PLATFORMS
   ruby
@@ -167,6 +182,7 @@ DEPENDENCIES
   coveralls
   flog (~> 4.1.2)
   fog (~> 1.16.0)
+  foodcritic
   formatador (~> 0.2.4)
   growl (~> 1.0.3)
   guard
