@@ -627,7 +627,7 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<fog>, ["~> 1.15.0"])
+      s.add_runtime_dependency(%q<fog>, ["~> 1.16.0"])
       s.add_runtime_dependency(%q<httparty>, ["~> 0.12.0"])
       s.add_runtime_dependency(%q<json>, ["~> 1.8.0"])
       s.add_runtime_dependency(%q<sshkey>, ["~> 1.6.0"])
@@ -638,7 +638,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<jeweler>, ["~> 1.8.7"])
       s.add_runtime_dependency(%q<slowweb>, ["~> 0.1.1"])
       s.add_runtime_dependency(%q<formatador>, ["~> 0.2.4"])
-      s.add_runtime_dependency(%q<activesupport>, ["~> 3.2.14"])
+      s.add_runtime_dependency(%q<activesupport>, ["~> 3.2"])
       s.add_development_dependency(%q<pry>, [">= 0"])
       s.add_development_dependency(%q<guard>, [">= 0"])
       s.add_development_dependency(%q<guard-rake>, [">= 0"])
@@ -649,7 +649,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rb-fsevent>, ["~> 0.9"])
       s.add_development_dependency(%q<rdoc>, [">= 0"])
     else
-      s.add_dependency(%q<fog>, ["~> 1.15.0"])
+      s.add_dependency(%q<fog>, ["~> 1.16.0"])
       s.add_dependency(%q<httparty>, ["~> 0.12.0"])
       s.add_dependency(%q<json>, ["~> 1.8.0"])
       s.add_dependency(%q<sshkey>, ["~> 1.6.0"])
@@ -660,7 +660,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<jeweler>, ["~> 1.8.7"])
       s.add_dependency(%q<slowweb>, ["~> 0.1.1"])
       s.add_dependency(%q<formatador>, ["~> 0.2.4"])
-      s.add_dependency(%q<activesupport>, ["~> 3.2.14"])
+      s.add_dependency(%q<activesupport>, ["~> 3.2"])
       s.add_dependency(%q<pry>, [">= 0"])
       s.add_dependency(%q<guard>, [">= 0"])
       s.add_dependency(%q<guard-rake>, [">= 0"])
@@ -672,7 +672,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rdoc>, [">= 0"])
     end
   else
-    s.add_dependency(%q<fog>, ["~> 1.15.0"])
+    s.add_dependency(%q<fog>, ["~> 1.16.0"])
     s.add_dependency(%q<httparty>, ["~> 0.12.0"])
     s.add_dependency(%q<json>, ["~> 1.8.0"])
     s.add_dependency(%q<sshkey>, ["~> 1.6.0"])
@@ -683,7 +683,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<jeweler>, ["~> 1.8.7"])
     s.add_dependency(%q<slowweb>, ["~> 0.1.1"])
     s.add_dependency(%q<formatador>, ["~> 0.2.4"])
-    s.add_dependency(%q<activesupport>, ["~> 3.2.14"])
+    s.add_dependency(%q<activesupport>, ["~> 3.2"])
     s.add_dependency(%q<pry>, [">= 0"])
     s.add_dependency(%q<guard>, [">= 0"])
     s.add_dependency(%q<guard-rake>, [">= 0"])

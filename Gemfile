@@ -1,6 +1,6 @@
 source 'https://rubygems.org/'
 
-gem 'fog', '~> 1.15.0'
+gem 'fog', '~> 1.16.0'
 gem 'httparty', '~> 0.12.0'
 gem 'json', '~> 1.8.0'
 gem 'sshkey', '~> 1.6.0'
@@ -11,7 +11,7 @@ gem 'bundler', '~> 1.3.5'
 gem 'jeweler', '~> 1.8.7'
 gem 'slowweb', '~> 0.1.1'
 gem 'formatador', '~> 0.2.4'
-gem "activesupport", "~> 3.2.14"
+gem "activesupport", "~> 3.2"
 
 group :development do
   gem 'pry'
@@ -27,7 +27,7 @@ end
 
 group :test do
   gem 'minitest', '~> 5.0.8'
-  gem 'webmock', '~> 1.14.0'
+  gem 'webmock', '~> 1.15.0'
   gem 'simplecov', '~> 0.7.1', require: false
   gem 'simplecov-rcov', '~> 0.2.3', :require => false
   gem 'coveralls', require: false
