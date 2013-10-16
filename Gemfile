@@ -1,7 +1,7 @@
 source 'https://rubygems.org/'
 
 gem 'fog', '~> 1.15.0'
-gem 'httparty', '~> 0.11.0'
+gem 'httparty', '~> 0.12.0'
 gem 'json', '~> 1.8.0'
 gem 'sshkey', '~> 1.6.0'
 gem 'net-ssh', '~> 2.7.0'
@@ -15,14 +15,14 @@ gem "activesupport", "~> 3.2.14"
 
 group :development do
   gem 'pry', '~> 0.9.12'
-  gem 'guard', '~> 1.8.2'
+  gem 'guard', '~> 2.1.0'
   gem 'guard-rake', '~> 0.0.9'
-  gem 'guard-rubocop', '~> 0.2.2'
-  gem 'guard-bundler', '~> 1.0.0'
+  gem 'guard-rubocop', '~> 1.0'
+  gem 'guard-bundler', '~> 0.1'
   gem 'growl', '~> 1.0.3'
   gem 'rb-inotify', '~> 0.9'
   gem 'rb-fsevent', '~> 0.9'
-  gem 'rdoc', '~> 3.12'
+  gem 'rdoc', '~> 4'
 end
 
 group :test do
