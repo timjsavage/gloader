@@ -3,13 +3,15 @@
 require_relative '../spec_helper'
 
 describe GLoader do
-
   describe GLoader::Core do
 
     subject do
+      ##
+      # Test class
       class Test
         include GLoader::Core
-      end.new
+      end
+      Test.new
     end
 
     describe '#output' do

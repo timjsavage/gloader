@@ -12,6 +12,10 @@ LOAD_TEST_PLATFORM_AGENT_TAG   = 'gloader-platform-agent'
 LOAD_TEST_PLATFORM_TAG_NAME_ID = 'gloader-platform-id'
 
 module GLoader
+
+  ##
+  # Generic IaaS functionality
+
   module Iaas
     def provider(config = {})
       @provider ||= GLoader::Iaas::Aws.new(config)

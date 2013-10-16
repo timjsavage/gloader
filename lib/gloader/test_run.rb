@@ -3,6 +3,10 @@
 require_relative 'console'
 
 module GLoader
+
+  ##
+  # Load test controller
+
   class TestRun
 
     def init

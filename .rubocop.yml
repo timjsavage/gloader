@@ -11,7 +11,7 @@ AllCops:
 # one by one as the offences are removed from the code base.
 
 Documentation:
-  Enabled: false
+  Enabled: true
 
 Encoding:
   Enabled: true

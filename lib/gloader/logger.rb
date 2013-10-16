@@ -3,6 +3,10 @@
 require 'log4r'
 
 module GLoader
+
+  ##
+  # Generic logger for classes and modules
+
   module Logger
 
     include Log4r
@@ -44,11 +48,17 @@ module GLoader
 
     end
 
+    ##
+    # Make logger available to classes
+
     module ClassMethods
       def logger
         Log4r::Logger[name]
       end
     end
+
+    ##
+    # Make logger available to modules
 
     module InstanceMethods
       def logger

@@ -4,6 +4,10 @@ require 'psych'
 require 'active_support/core_ext/hash'
 
 module GLoader
+
+  ##
+  # Gloader configuation management
+
   class Config
 
     def initialize

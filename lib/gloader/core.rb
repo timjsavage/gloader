@@ -4,6 +4,10 @@ require_relative 'logger'
 require_relative 'config'
 
 module GLoader
+
+  ##
+  # Core functionality
+
   module Core
 
     def output(level = nil)

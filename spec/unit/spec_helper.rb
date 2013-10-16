@@ -4,12 +4,9 @@ ENV['GEM_ENV'] = 'test'
 
 require_relative '../specs_helper'
 require 'simplecov'
-require 'simplecov-rcov'
-require 'coveralls'
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
-  SimpleCov::Formatter::HTMLFormatter,
-  SimpleCov::Formatter::RcovFormatter
+  SimpleCov::Formatter::HTMLFormatter
 ]
 
 SimpleCov.start do

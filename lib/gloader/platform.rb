@@ -6,6 +6,10 @@ require_relative 'chef'
 require_relative 'config'
 
 module GLoader
+
+  ##
+  # Platform management
+
   class Platform
 
     include GLoader::Iaas

@@ -6,6 +6,8 @@ describe GLoader do
   describe GLoader::Iaas do
 
     subject do
+      ##
+      # Test class
       class Test
         include GLoader::Iaas
       end

@@ -1,7 +1,10 @@
 # Encoding: utf-8
 
 module GLoader
-  module Chef
 
+  ##
+  # Control the use of Chef
+
+  module Chef
   end
 end

@@ -6,9 +6,12 @@ describe GLoader do
   describe GLoader::Console do
 
     subject do
+      ##
+      # Test class
       class Test
         include GLoader::Console
-      end.new
+      end
+      Test.new
     end
 
     describe '#console_url' do

@@ -10,6 +10,10 @@ require 'slowweb'
 
 module GLoader
   module Iaas
+
+    ##
+    # Rackspace specific IaaS integration
+
     class Rackspace
 
       include GLoader::Core

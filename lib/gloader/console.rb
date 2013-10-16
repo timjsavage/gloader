@@ -4,6 +4,10 @@ require 'httparty'
 require 'json'
 
 module GLoader
+
+  ##
+  # Grinder console connection and use
+
   module Console
 
     include GLoader::Logger

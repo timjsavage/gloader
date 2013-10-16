@@ -15,6 +15,10 @@ GLOADER_PLATFORM_AWS_TAG_NAME_ID = 'gloader-platform-id'
 
 module GLoader
   module Iaas
+
+    ##
+    # AWS specific IaaS integration
+
     class Aws
 
       include GLoader::Core

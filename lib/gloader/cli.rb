@@ -6,6 +6,9 @@ require 'formatador'
 
 module GLoader
 
+  ##
+  # Base class for CLI
+
   class Base < Thor
 
     no_commands do
@@ -38,6 +41,9 @@ module GLoader
       config.display
     end
   end
+
+  ##
+  # CLI for build commands
 
   class Build < Base
 
@@ -73,6 +79,9 @@ module GLoader
     def failing
     end
   end
+
+  ##
+  # CLI for test commands
 
   class Test < Base
 
@@ -126,6 +135,9 @@ module GLoader
     def report_g2g
     end
   end
+
+  ##
+  # Parent class for CLI
 
   class CLI < Base
     include Thor::Actions
