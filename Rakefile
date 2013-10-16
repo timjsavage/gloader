@@ -10,14 +10,8 @@ rescue Bundler::BundlerError => e
   $stderr.puts 'Run `bundle install` to install missing gems'
   exit e.status_code
 end
+
 require 'rake'
-
-task default:  [:rubocop,
-                :quality,
-                'gemspec:validate',
-                'gloader:specs:unit',
-                'gloader:specs:integration']
-
 require File.expand_path(File.join(File.dirname(__FILE__), 'lib', 'gloader'))
 require File.expand_path(File.join(File.dirname(__FILE__), 'lib', 'gloader', 'version'))
 require 'rake/testtask'
@@ -89,3 +83,10 @@ desc 'Run RuboCop on the lib directory'
 Rubocop::RakeTask.new(:rubocop) do |task|
   task.fail_on_error = true
 end
+
+task default:  [:rubocop,
+                :quality,
+                'gemspec:generate',
+                'gemspec:validate',
+                'gloader:specs:unit',
+                'gloader:specs:integration']
