@@ -10,7 +10,7 @@ describe GLoader do
       GLoader::Config.new
     end
 
-    before(:each) do
+    def remove_config_files
       default_path = File.expand_path('spec/unit/fixtures/config_gloader_default.yml')
       state_path = File.expand_path('spec/unit/fixtures/config_gloader_state.yml')
       unless subject.config_path(:default) == default_path
@@ -21,15 +21,12 @@ describe GLoader do
       end
     end
 
+    before(:each) do
+      remove_config_files
+    end
+
     after(:each) do
-      default_path = File.expand_path('spec/unit/fixtures/config_gloader_default.yml')
-      state_path = File.expand_path('spec/unit/fixtures/config_gloader_state.yml')
-      unless subject.config_path(:default) == default_path
-        File.delete subject.config_path(:default) if File.exists?(subject.config_path(:default))
-      end
-      unless subject.config_path(:state) == state_path
-        File.delete subject.config_path(:state) if File.exists?(subject.config_path(:state))
-      end
+      remove_config_files
     end
 
     describe '#initialize' do

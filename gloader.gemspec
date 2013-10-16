@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
     "README.md"
   ]
   s.files = [
+    ".rbenv-gemsets",
     ".rubocop.yml",
     ".travis.yml",
     "Gemfile",

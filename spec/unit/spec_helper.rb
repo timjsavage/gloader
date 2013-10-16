@@ -2,6 +2,7 @@
 
 ENV['GEM_ENV'] = 'test'
 
+require_relative '../specs_helper'
 require 'simplecov'
 require 'simplecov-rcov'
 require 'coveralls'

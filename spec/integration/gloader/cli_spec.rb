@@ -7,10 +7,12 @@ describe 'GLoader CLI' do
   before(:each) do
     Fog.mock!
     Fog::Mock.delay = 0
+    remove_config_files
   end
 
   after(:each) do
     Fog::Mock.reset
+    remove_config_files
   end
 
   describe 'Main commands' do

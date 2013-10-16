@@ -2,6 +2,7 @@
 
 ENV['GEM_ENV'] = 'test'
 
+require_relative '../specs_helper'
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'minitest/spec'

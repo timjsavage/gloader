@@ -13,8 +13,7 @@ describe 'GLoader CLI' do
       aws_config.config(:default,
                         { aws_id:      'foo',
                           aws_key:     'bar',
-                          platform_id: 'default' },
-                        true)
+                          platform_id: 'default' })
     end
 
     after(:each) do
