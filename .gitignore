@@ -23,6 +23,3 @@ Gemfile.lock
 .yardoc
 _yardoc
 doc/
-
-.ruby-version
-.rbenv-gemsets
