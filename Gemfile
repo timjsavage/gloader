@@ -26,10 +26,10 @@ group :development do
 end
 
 group :test do
-  gem 'minitest', '~> 5.0.3'
-  gem 'webmock', '~> 1.13.0'
-  gem 'simplecov', require: false
-  gem 'simplecov-rcov', :require => false
+  gem 'minitest', '~> 5.0.8'
+  gem 'webmock', '~> 1.15.0'
+  gem 'simplecov', '~> 0.7.1', require: false
+  gem 'simplecov-rcov', '~> 0.2.3', :require => false
   gem 'coveralls', require: false
   gem 'rubocop', '~> 0.13.0'
   gem 'flog',  '~> 4.1.2'
