@@ -9,13 +9,14 @@ require 'coveralls'
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   SimpleCov::Formatter::HTMLFormatter,
-  SimpleCov::Formatter::RcovFormatter,
-  Coveralls::SimpleCov::Formatter
+  SimpleCov::Formatter::RcovFormatter
 ]
+
 SimpleCov.start do
   add_filter '/spec/'
   minimum_coverage 95
   maximum_coverage_drop 5
+  command_name 'test:units'
 end
 
 require 'minitest/autorun'

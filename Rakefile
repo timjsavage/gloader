@@ -84,9 +84,13 @@ Rubocop::RakeTask.new(:rubocop) do |task|
   task.fail_on_error = true
 end
 
+require 'coveralls/rake/task'
+Coveralls::RakeTask.new
+
 task default:  [:rubocop,
                 :quality,
                 'gemspec:generate',
                 'gemspec:validate',
                 'gloader:specs:unit',
-                'gloader:specs:integration']
+                'gloader:specs:integration',
+                'coveralls:push']

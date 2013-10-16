@@ -47,6 +47,7 @@ Gem::Specification.new do |s|
     "spec/integration/gloader/cli_spec.rb",
     "spec/integration/gloader/test_run_spec.rb",
     "spec/integration/spec_helper.rb",
+    "spec/specs_helper.rb",
     "spec/unit/fixtures/.gitignore",
     "spec/unit/fixtures/config_gloader_default.yml",
     "spec/unit/fixtures/config_gloader_state.yml",
