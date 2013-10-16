@@ -13,7 +13,7 @@ module GLoader
     include GLoader::Core
 
     def initialize(config)
-      raise ArgumentError unless config.instance_of? GLoader::Config
+      fail ArgumentError unless config.instance_of? GLoader::Config
       provider(config)
     end
 

@@ -23,6 +23,9 @@ HashSyntax:
 IndentationWidth:
   Enabled: true
 
+ClassLength:
+  Max: 250
+
 LineLength:
   Max: 100
   Enabled: true

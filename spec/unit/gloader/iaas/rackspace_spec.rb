@@ -17,10 +17,10 @@ describe GLoader do
       end
 
       subject do
-        GLoader::Iaas::Rackspace.new({ rackspace_id:  'foo2',
-                                       rackspace_key: 'bar2',
-                                       platform_id:   'default',
-                                       init:          false })
+        GLoader::Iaas::Rackspace.new(rackspace_id:  'foo2',
+                                     rackspace_key: 'bar2',
+                                     platform_id:   'default',
+                                     init:          false)
       end
 
       describe '#config' do

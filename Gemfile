@@ -27,11 +27,11 @@ end
 
 group :test do
   gem 'minitest', '~> 5.0.8'
-  gem 'webmock', '~> 1.15.0'
+  gem 'webmock', '~> 1.14.0'
   gem 'simplecov', '~> 0.7.1', require: false
   gem 'simplecov-rcov', '~> 0.2.3', :require => false
   gem 'coveralls', require: false
-  gem 'rubocop', '~> 0.13.0'
+  gem 'rubocop', '~> 0.14.0'
   gem 'flog',  '~> 4.1.2'
   gem 'roodi', '~> 3.1.1'
   gem 'reek', '~> 1.3.3'

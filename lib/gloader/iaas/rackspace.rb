@@ -58,26 +58,26 @@ module GLoader
         if @connection.key?(region)
           @connection[region]
         else
-          @connection.merge!({ region => Fog::Compute.new({
+          @connection.merge!(region => Fog::Compute.new(
             provider:           'Rackspace',
             rackspace_username: config[:rackspace_id],
             rackspace_api_key:  config[:rackspace_key],
             rackspace_auth_url: regions[region][:rackspace_auth_url],
             rackspace_region:   :lon,
             version:            :v2
-          }) })
+          ))
         end
         @connection[region]
       end
 
       def connection_storage
-        @connection_storage ||= Fog::Storage.new({
+        @connection_storage ||= Fog::Storage.new(
           provider:           'Rackspace',
           rackspace_username: config[:rackspace_id],
           rackspace_api_key:  config[:rackspace_key],
           rackspace_auth_url: Fog::Rackspace::UK_AUTH_ENDPOINT,
           rackspace_region:   :lon
-        })
+        )
       end
 
       def destroy_dependencies

@@ -26,22 +26,22 @@ describe GLoader do
       end
 
       def create_console(region = 'eu-west-1')
-        subject.connection(region).servers.create({
-          image_id:           'ami-ca1a14be',
-          flavor_id:          'm1.medium',
+        subject.connection(region).servers.create(
+          image_id:   'ami-ca1a14be',
+          flavor_id:  'm1.medium',
           tags: {
             GLOADER_PLATFORM_AWS_TAG_NAME     => GLOADER_PLATFORM_AWS_CONSOLE_TAG,
             GLOADER_PLATFORM_AWS_TAG_NAME_ID  => 'default',
             GLOADER_PLATFORM_AWS_GROUP_TAG    => 'true',
             'Name'                          => "#{GLOADER_PLATFORM_AWS_CONSOLE_TAG} (default)",
           }
-        })
+        )
       end
 
       def create_agent(region)
-        subject.connection(region).servers.create({
-          image_id:           'ami-ca1a14be',
-          flavor_id:          'm1.medium',
+        subject.connection(region).servers.create(
+          image_id:   'ami-ca1a14be',
+          flavor_id:  'm1.medium',
           tags: {
             GLOADER_PLATFORM_AWS_TAG_NAME     => GLOADER_PLATFORM_AWS_AGENT_TAG,
             GLOADER_PLATFORM_AWS_TAG_NAME_ID  => 'default',
@@ -49,17 +49,17 @@ describe GLoader do
             'Name'                          => "#{GLOADER_PLATFORM_AWS_AGENT_TAG} (default)",
             'AgentID'                       => 1
           }
-        })
+        )
       end
 
       def create_other(region)
-        subject.connection(region).servers.create({
-          image_id:           'ami-ca1a14be',
-          flavor_id:          'm1.medium',
+        subject.connection(region).servers.create(
+          image_id:   'ami-ca1a14be',
+          flavor_id:  'm1.medium',
           tags: {
             'Name' => 'Other Instance'
           }
-        })
+        )
       end
 
       describe '#constants' do
@@ -99,7 +99,7 @@ describe GLoader do
         it 'should destroy all keys and security groups' do
           subject.create_local_keys
           subject.create_security_groups
-          subject.connection('eu-west-1').key_pairs.create({ name: 'fog_gloader_platform' })
+          subject.connection('eu-west-1').key_pairs.create(name: 'fog_gloader_platform')
 
           subject.connection('eu-west-1').key_pairs.select do |g|
             g.name == 'fog_gloader_platform'
@@ -271,7 +271,7 @@ describe GLoader do
         end
         it 'will return true if a key already exists' do
           region = 'eu-west-1'
-          subject.connection(region).key_pairs.create({ name: subject.key_name(true) })
+          subject.connection(region).key_pairs.create(name: subject.key_name(true))
           subject.iaas_key_exists?(region).must_equal true
         end
       end

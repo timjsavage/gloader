@@ -30,7 +30,7 @@ module GLoader
       }
 
       def initialize(config)
-        raise ArgumentError unless config.instance_of? GLoader::Config
+        fail ArgumentError unless config.instance_of? GLoader::Config
         config(config)
         rate_limit
         unless self.config[:init] == false
@@ -72,22 +72,22 @@ module GLoader
         if @connection.key?(region)
           @connection[region]
         else
-          @connection.merge!({ region => Fog::Compute.new({
+          @connection.merge!(region => Fog::Compute.new(
             provider:               'AWS',
             aws_access_key_id:      config[:aws_id],
             aws_secret_access_key:  config[:aws_key],
             region:                 region
-          }) })
+          ))
         end
         @connection[region]
       end
 
       def connection_storage
-        @connection_storage ||= Fog::Storage.new({
+        @connection_storage ||= Fog::Storage.new(
           provider:               'AWS',
           aws_access_key_id:      config[:aws_id],
           aws_secret_access_key:  config[:aws_key]
-        })
+        )
       end
 
       def find_instances_by_tag(tag, value)
@@ -127,12 +127,12 @@ module GLoader
       end
 
       def instance_image(region)
-        raise ArgumentError unless regions[region]
+        fail ArgumentError unless regions[region]
         regions[region][:image_id]
       end
 
       def instance_size(type)
-        raise ArgumentError unless type == :agent || type == :console
+        fail ArgumentError unless type == :agent || type == :console
         if type == :agent
           config[:instance_size_agent]
         else
@@ -261,7 +261,7 @@ module GLoader
       end
 
       def create_instance(type, region = nil)
-        raise ArgumentError unless type == :agent || type == :console
+        fail ArgumentError unless type == :agent || type == :console
         region = config[:region] if region.nil?
         logger.info "Creating instance: #{type.to_s} in #{region}"
         server = bootstrap_instance(type, region)
@@ -277,7 +277,7 @@ module GLoader
 
       def destroy_instances(type)
         logger.info "Destroying instances: #{type.to_s}"
-        raise ArgumentError unless type == :agent || type == :console
+        fail ArgumentError unless type == :agent || type == :console
 
         tag = type == :console ? GLOADER_PLATFORM_AWS_CONSOLE_TAG : GLOADER_PLATFORM_AWS_AGENT_TAG
 

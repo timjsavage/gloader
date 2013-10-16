@@ -29,11 +29,11 @@ describe GLoader do
     end
 
     def create_other(region)
-      subject.provider.connection(region).servers.create({
+      subject.provider.connection(region).servers.create(
         image_id:   'ami-ca1a14be',
         flavor_id:  'm1.medium',
         tags:       { 'Name' => 'Other Instance' }
-      })
+      )
     end
 
     describe '#provider' do
