@@ -86,10 +86,18 @@ end
 require 'coveralls/rake/task'
 Coveralls::RakeTask.new
 
-require 'foodcritic'
-FoodCritic::Rake::LintTask.new do |t|
-  cookbooks = Dir.glob(File.join(File.dirname(__FILE__), 'tools/chef/cookbooks/*'))
-  t.options = { fail_tags: ['correctness'], cookbook_paths: cookbooks }
+namespace :foodcritic do
+  require 'foodcritic'
+  desc 'Run all cookbook lint tests'
+  FoodCritic::Rake::LintTask.new('all') do |t|
+    cookbooks = Dir.glob(File.join(File.dirname(__FILE__), 'tools/chef/cookbooks/*'))
+    t.options = { fail_tags: ['correctness'], cookbook_paths: cookbooks }
+  end
+  desc 'Run grinder cookbook lint test'
+  FoodCritic::Rake::LintTask.new('grinder') do |t|
+    cookbooks = [File.join(File.dirname(__FILE__), 'tools/chef/cookbooks/grinder')]
+    t.options = { fail_tags: ['correctness'], cookbook_paths: cookbooks }
+  end
 end
 
 task default:  [:rubocop,
@@ -98,4 +106,5 @@ task default:  [:rubocop,
                 'gemspec:validate',
                 'gloader:specs:unit',
                 'gloader:specs:integration',
+                'foodcritic:grinder',
                 'coveralls:push']
